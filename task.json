@@ -1,0 +1,26 @@
+{
+    "0":{
+	"id": 0, 
+	"priority": "L", 
+	"title": "diocane", 
+	"message": "asd", 
+	"maintainer": ["quel_tale", "travelskiddino caro", "asd"],
+	"done":false
+	},
+    
+    "1":{
+	"id": 1, 
+	"priority": "M", 
+	"title": "scrivere \"o'cane\" è bello", 
+	"maintainer": ["ciowa", "caro", "asd"],
+	"done":false
+	},
+
+    "2":{
+	"id": 2, 
+	"priority": "H", 
+	"title": "robe", 
+	"maintainer": ["gimmi"],
+	"done":false
+	}
+}
