@@ -19,16 +19,18 @@ echo "<tr>
 
 foreach($obj as $tasklist){
     
-    echo "<tr>";
-    echo "<td>".$tasklist['id']."</td>";
-    echo "<td>".$tasklist['priority']."</td>";
-    echo "<td>".$tasklist['title']."</td>";
-    echo "<td>";
-    echo isset($tasklist['message']) ? $tasklist['message']: "";
-    echo "</td>";
-    echo "<td>".implode(", ", $tasklist['maintainer'])."</td>";
-    // echo "<td>".$tasklist['done']."</td>";
-    echo "</tr>";
+    if(!$tasklist['done']){
+        echo "<tr>";
+        echo "<td>".$tasklist['id']."</td>";
+        echo "<td>".$tasklist['priority']."</td>";
+        echo "<td>".$tasklist['title']."</td>";
+        echo "<td>";
+        echo isset($tasklist['message']) ? $tasklist['message']: "";
+        echo "</td>";
+        echo "<td>".implode(", ", $tasklist['maintainer'])."</td>";
+        // echo "<td>".$tasklist['done']."</td>";
+        echo "</tr>";
+    }
 }
 ?>
 
