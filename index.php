@@ -3,9 +3,14 @@
 <body>
 
 <?php
-$taskin=file_get_contents("task.json");
+$taskin = file_get_contents("task.json");
+$quotesin = file_get_contents("quotes.json");
 
-$obj=json_decode("$taskin", TRUE);
+$obj = json_decode("$taskin", TRUE);
+$obj2 = json_decode("$quotesin", TRUE);
+$num_quotes = count($obj2) - 1;
+
+// echo rand(0,$num_quotes);
 
 echo "<script type=\"text/javascript\"> 
 function display_c(){
