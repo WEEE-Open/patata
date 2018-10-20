@@ -7,6 +7,45 @@ $taskin=file_get_contents("task.json");
 
 $obj=json_decode("$taskin", TRUE);
 
+echo "<script type=\"text/javascript\"> 
+function display_c(){
+var refresh=1000;
+mytime=setTimeout('display_ct()',refresh)
+}
+
+function addZero(i) {
+    if (i < 10) {
+        i = \"0\" + i;
+    }
+    return i;
+}
+
+function display_ct() {
+
+var months = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];
+var x = new Date()
+var d = addZero(x.getDate())
+var mo = months[x.getMonth()]
+var y = addZero(x.getFullYear())
+var h = addZero(x.getHours())
+var mi = addZero(x.getMinutes())
+var s = addZero(x.getSeconds())
+var wd = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"]
+var td = wd[x.getDay()]
+var x1 = td + \" - \" + d + \" \" + mo + \" \" + y
+var x2 = h + \":\" + mi + \":\" + s
+document.getElementById('ct').innerHTML = x1
+document.getElementById('ct2').innerHTML = x2
+
+display_c();
+}
+
+</script>
+
+<body onload=display_ct()>
+<div id='ct' ></div>
+<div id='ct2' ></div>";
+
 echo "<div class=\"task\">
     <table style=\"width:70%\" align=\"center\">";
 echo "<tr>
