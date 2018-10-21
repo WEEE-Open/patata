@@ -1,0 +1,32 @@
+{
+    "0":{
+        "id": 0,
+        "quote": "Lorem ipsum dolor sit", 
+        "author": ["Gu1_bot"]
+	},
+    "1":{
+        "id": 1,
+	    "quote": "asdasda", 
+	    "author": ["Tizio"]
+	},
+    "2":{
+        "id": 2,
+        "quote": "riempitivo 3", 
+	    "author": ["Caio"]
+	},
+    "3":{
+        "id": 3,    
+	    "quote": "test 4", 
+	    "author": ["Sempronio"]
+	},
+    "4":{
+        "id": 4,
+	    "quote": "È un Debian", 
+	    "author": ["Serie italiana brutta"]
+	},
+    "5":{
+        "id": 5,
+        "quote": "test 5", 
+	    "author": ["Tizio 5"]
+	}
+}

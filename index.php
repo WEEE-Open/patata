@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<body>
+<body onload="display_ct(), display_qt()">
 
 <?php
 $taskin = file_get_contents("task.json");
@@ -8,9 +8,9 @@ $quotesin = file_get_contents("quotes.json");
 
 $obj = json_decode("$taskin", TRUE);
 $obj2 = json_decode("$quotesin", TRUE);
-$num_quotes = count($obj2) - 1;
 
-// echo rand(0,$num_quotes);
+$num_quotes = count($obj2) - 1;
+$quote_refresh = 5; // In seconds
 
 echo "<script type=\"text/javascript\"> 
 function display_c(){
@@ -27,29 +27,49 @@ function addZero(i) {
 
 function display_ct() {
 
-var months = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];
-var x = new Date()
-var d = addZero(x.getDate())
-var mo = months[x.getMonth()]
-var y = addZero(x.getFullYear())
-var h = addZero(x.getHours())
-var mi = addZero(x.getMinutes())
-var s = addZero(x.getSeconds())
-var wd = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"]
-var td = wd[x.getDay()]
-var x1 = td + \" - \" + d + \" \" + mo + \" \" + y
-var x2 = h + \":\" + mi + \":\" + s
-document.getElementById('ct').innerHTML = x1
-document.getElementById('ct2').innerHTML = x2
-
-display_c();
+    var months = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];
+    var x = new Date()
+    var d = addZero(x.getDate())
+    var mo = months[x.getMonth()]
+    var y = addZero(x.getFullYear())
+    var h = addZero(x.getHours())
+    var mi = addZero(x.getMinutes())
+    var s = addZero(x.getSeconds())
+    var wd = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"]
+    var td = wd[x.getDay()]
+    var x1 = td + \" - \" + d + \" \" + mo + \" \" + y
+    var x2 = h + \":\" + mi + \":\" + s
+    document.getElementById('ct').innerHTML = x1
+    document.getElementById('ct2').innerHTML = x2
+    
+    display_c();
 }
 
 </script>
 
-<body onload=display_ct()>
-<div id='ct' ></div>
-<div id='ct2' ></div>";
+<div id='ct'></div>
+<div id='ct2'></div>";
+
+echo "<script type=\"text/javascript\"> 
+function display_q(){
+    var refresh=1000*$quote_refresh;
+    mytime=setTimeout('display_qt()',refresh)
+}
+
+function display_qt() {
+
+    var quotes_array = $quotesin
+    var val = Math.floor(Math.random() * $num_quotes)
+    document.getElementById('quotesbox').innerHTML = quotes_array[val].quote
+    document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author
+
+    display_q();
+}
+
+</script>
+
+<div align=right id='quotesbox'></div>
+<div align=right id='authorbox'></div>";
 
 echo "<div class=\"task\">
     <table style=\"width:70%\" align=\"center\">";
@@ -132,9 +152,9 @@ echo "<div class=\"statswrapper\">
 <table>
 </div></tr></td>";
 
-echo "<div class=\"statswrapper\">
+echo "<div align=right class=\"statswrapper\">
 <p>Recently modified items:</p>
-<table style=\"width:30%\">
+<table align=right style=\"width:30%\">
 	<thead>
 	<tr>
 		<td>Item</td>
