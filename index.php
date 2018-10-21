@@ -62,8 +62,8 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="statswrapper">
-                        <h6>Recently added items:</h6>
-                        <table class="table table-striped table-sm ">
+                        <h6 class="text-center">Recently added items</h6>
+                        <table class="table table-striped table-sm text-center">
                             <thead>
                                 <tr>
                                     <td>Item</td>
@@ -118,8 +118,8 @@
 
                 <div class="col-md-6">
                     <div class="statswrapper">
-                        <h6>Recently modified items:</h6>
-                        <table class="table table-striped table-sm ">
+                        <h6 class="text-center">Recently modified items</h6>
+                        <table class="table table-striped table-sm text-center">
                             <thead>
                                 <tr>
                                     <td>Item</td>
