@@ -19,61 +19,43 @@
                 </div>
             </div>
 
+            <hr/>
+            
+            <div class="task mt-5">
+                <h4 class="text-center">Tasklist</h4>
+                <table class="table" style="width: 70%; margin: 0 auto;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Priority</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Maintainer</th>
+                    </tr>
+                    <?php
+                        $taskin = file_get_contents("task.json");
+                        $obj = json_decode("$taskin", TRUE);
+
+                        foreach ($obj as $tasklist) {
+                            if (!$tasklist['done']) {
+                                echo "<tr>";
+                                echo "<td>".$tasklist['id']."</td>";
+                                echo "<td>".$tasklist['priority']."</td>";
+                                echo "<td>".$tasklist['title']."</td>";
+                                echo "<td>";
+                                echo isset($tasklist['message']) ? $tasklist['message']: "";
+                                echo "</td>";
+                                echo "<td>".implode(", ", $tasklist['maintainer'])."</td>";
+                                //echo "<td>".$tasklist['done']."</td>";
+                                echo "</tr>";
+                            }
+                        }
+                    ?>
+                </table> 
+            </div>
+
+            <hr/>
+
 <?php
-$taskin = file_get_contents("task.json");
-$quotesin = file_get_contents("quotes.json");
-
-$obj = json_decode("$taskin", TRUE);
-$obj2 = json_decode("$quotesin", TRUE);
-
-$num_quotes = count($obj2) - 1;
-$quote_refresh = 5; // In seconds
-
-echo "<script type=\"text/javascript\"> 
-function display_q(){
-    var refresh=1000*$quote_refresh;
-    mytime=setTimeout('display_qt()',refresh)
-}
-
-function display_qt() {
-
-    var quotes_array = $quotesin
-    var val = Math.floor(Math.random() * $num_quotes)
-    document.getElementById('quotesbox').innerHTML = quotes_array[val].quote
-    document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author
-
-    display_q();
-}
-
-</script>";
-
-echo "<div class=\"task\">
-    <table style=\"width:70%\" align=\"center\">";
-echo "<tr>
-    <th>ID</th>
-    <th>Priority</th>
-    <th>Title</th>
-    <th>Description</th>
-    <th>Maintainer</th>
-    </tr>";
-
-foreach($obj as $tasklist){
-    
-    if(!$tasklist['done']){
-        echo "<tr>";
-        echo "<td>".$tasklist['id']."</td>";
-        echo "<td>".$tasklist['priority']."</td>";
-        echo "<td>".$tasklist['title']."</td>";
-        echo "<td>";
-        echo isset($tasklist['message']) ? $tasklist['message']: "";
-        echo "</td>";
-        echo "<td>".implode(", ", $tasklist['maintainer'])."</td>";
-        //echo "<td>".$tasklist['done']."</td>";
-        echo "</tr>";
-    }
-}
-echo "<br></table></div>";
-
 echo "<div class=\"statswrapper\">
 <p>Recently added items:</p>
 <table style=\"width:30%\">
@@ -216,6 +198,29 @@ echo "<div align=right class=\"statswrapper\">
 
                 display_c();
             }
+
+            <?php
+                $quotesin = file_get_contents("quotes.json");
+                $obj2 = json_decode("$quotesin", TRUE);
+                $num_quotes = count($obj2) - 1;
+                $quote_refresh = 5; // In seconds
+
+                echo "
+                function display_q(){
+                    var refresh=1000*$quote_refresh;
+                    mytime=setTimeout('display_qt()',refresh)
+                }
+
+                function display_qt() {
+
+                    var quotes_array = $quotesin
+                    var val = Math.floor(Math.random() * $num_quotes)
+                    document.getElementById('quotesbox').innerHTML = quotes_array[val].quote
+                    document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author
+
+                    display_q();
+                }";
+            ?>
         </script>
     </body>
 </html> 
