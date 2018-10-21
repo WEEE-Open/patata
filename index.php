@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html>
-<body onload="display_ct(), display_qt()">
+    <head>
+        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+        <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    </head>
+    <body onload="display_ct(), display_qt()">
+        <div class="container">
+            <h1>Patata</h1>
+
+            <div class="row">
+                <div class="col-md-6">      
+                    <div id='ct'></div>
+                    <div id='ct2'></div>
+                </div>
+                <div class="col-md-6">
+                    <div align=right id='quotesbox'></div>
+                    <div align=right id='authorbox'></div>
+                </div>
+            </div>
 
 <?php
 $taskin = file_get_contents("task.json");
@@ -11,44 +28,6 @@ $obj2 = json_decode("$quotesin", TRUE);
 
 $num_quotes = count($obj2) - 1;
 $quote_refresh = 5; // In seconds
-
-echo "<script type=\"text/javascript\"> 
-function display_c(){
-var refresh=1000;
-mytime=setTimeout('display_ct()',refresh)
-}
-
-function addZero(i) {
-    if (i < 10) {
-        i = \"0\" + i;
-    }
-    return i;
-}
-
-function display_ct() {
-
-    var months = [\"January\", \"February\", \"March\", \"April\", \"May\", \"June\", \"July\", \"August\", \"September\", \"October\", \"November\", \"December\"];
-    var x = new Date()
-    var d = addZero(x.getDate())
-    var mo = months[x.getMonth()]
-    var y = addZero(x.getFullYear())
-    var h = addZero(x.getHours())
-    var mi = addZero(x.getMinutes())
-    var s = addZero(x.getSeconds())
-    var wd = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"]
-    var td = wd[x.getDay()]
-    var x1 = td + \" - \" + d + \" \" + mo + \" \" + y
-    var x2 = h + \":\" + mi + \":\" + s
-    document.getElementById('ct').innerHTML = x1
-    document.getElementById('ct2').innerHTML = x2
-    
-    display_c();
-}
-
-</script>
-
-<div id='ct'></div>
-<div id='ct2'></div>";
 
 echo "<script type=\"text/javascript\"> 
 function display_q(){
@@ -66,10 +45,7 @@ function display_qt() {
     display_q();
 }
 
-</script>
-
-<div align=right id='quotesbox'></div>
-<div align=right id='authorbox'></div>";
+</script>";
 
 echo "<div class=\"task\">
     <table style=\"width:70%\" align=\"center\">";
@@ -207,5 +183,39 @@ echo "<div align=right class=\"statswrapper\">
     <div>";
 ?>
 
-</body>
+        </div>
+
+        <script type="text/javascript"> 
+            function display_c(){
+                var refresh=1000;
+                mytime=setTimeout('display_ct()',refresh)
+            }
+
+            function addZero(i) {
+                if (i < 10) {
+                    i = "0" + i;
+                }
+                return i;
+            }
+
+            function display_ct() {
+                var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                var x = new Date()
+                var d = addZero(x.getDate())
+                var mo = months[x.getMonth()]
+                var y = addZero(x.getFullYear())
+                var h = addZero(x.getHours())
+                var mi = addZero(x.getMinutes())
+                var s = addZero(x.getSeconds())
+                var wd = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                var td = wd[x.getDay()]
+                var x1 = td + " - " + d + " " + mo + " " + y
+                var x2 = h + ":" + mi + ":" + s
+                document.getElementById('ct').innerHTML = x1
+                document.getElementById('ct2').innerHTML = x2
+
+                display_c();
+            }
+        </script>
+    </body>
 </html> 
