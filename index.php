@@ -12,6 +12,18 @@ $obj2 = json_decode("$quotesin", TRUE);
 $num_quotes = count($obj2) - 1;
 $quote_refresh = 5; // In seconds
 
+class MyDB extends SQLite3 {
+   function __construct() {
+      $this->open('patabase.db');
+   }
+}
+$db = new MyDB();
+if(!$db) {
+   echo $db->lastErrorMsg();
+} else {
+   echo "Opened database successfully\n";
+}
+
 echo "<script type=\"text/javascript\"> 
 function display_c(){
 var refresh=1000;
