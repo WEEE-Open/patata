@@ -93,7 +93,13 @@ echo "<tr>
     <th>Maintainer</th>
     </tr>";
 
-foreach($obj as $tasklist){
+ $sql = '
+    SELECT * from TASK;
+    EOF';
+
+$print = $db->query($sql);
+
+while($tasklist = $print->fetchArray(SQLITE3_ASSOC)){
     
     if(!$tasklist['done']){
         echo "<tr>";
@@ -101,9 +107,9 @@ foreach($obj as $tasklist){
         echo "<td>".$tasklist['priority']."</td>";
         echo "<td>".$tasklist['title']."</td>";
         echo "<td>";
-        echo isset($tasklist['message']) ? $tasklist['message']: "";
+        echo isset($tasklist['description']) ? $tasklist['message']: "";
         echo "</td>";
-        echo "<td>".implode(", ", $tasklist['maintainer'])."</td>";
+        //echo "<td>".implode(", ", $tasklist['maintainer'])."</td>";
         //echo "<td>".$tasklist['done']."</td>";
         echo "</tr>";
     }
