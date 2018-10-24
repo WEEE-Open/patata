@@ -37,20 +37,41 @@
                         <?php
                             $taskin = file_get_contents("task.json");
                             $obj = json_decode("$taskin", TRUE);
-
-                            foreach ($obj as $tasklist) {
-                                if (!$tasklist['done']) {
-                                    echo "<tr>";
-                                    echo "<td>".$tasklist['id']."</td>";
-                                    echo "<td>".$tasklist['priority']."</td>";
-                                    echo "<td>".$tasklist['title']."</td>";
-                                    echo "<td>";
-                                    echo isset($tasklist['message']) ? $tasklist['message']: "";
-                                    echo "</td>";
-                                    echo "<td>".implode(", ", $tasklist['maintainer'])."</td>";
-                                    //echo "<td>".$tasklist['done']."</td>";
-                                    echo "</tr>";
+                            class MyDB extends SQLite3
+                                {
+                                    function __construct()
+                                    {
+                                        $this->open('patabase.db');
+                                    }
                                 }
+
+                            $db = new MyDB();
+                            $result = $db->query('SELECT ID, Priority, Title,
+                                                Description, Maintainer
+                                                FROM task LEFT JOIN t_maintainer ON ID=T_ID 
+                                                WHERE Done = 0
+                                                ORDER BY ID');
+                                                        
+                            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
+                                    $mantainer[$tasklist['ID']]=array();
+                            }
+                            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
+                                array_push($mantainer[$tasklist['ID']],$tasklist['Maintainer']);
+                            }
+                            $i=0;
+                            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
+                                    if($tasklist['ID']!=$i){
+                                        echo "<tr>";
+                                        echo "<td>".$tasklist['ID']."</td>";
+                                        echo "<td>".$tasklist['Priority']."</td>";
+                                        echo "<td>".$tasklist['Title']."</td>";
+                                        echo "<td>";
+                                        echo isset($tasklist['Description']) ? $tasklist['Description']: "";
+                                        echo "</td>";
+                                        echo "<td>".implode(', ',$mantainer[$tasklist['ID']])."</td>";
+                                        echo "</tr>";
+                                    }
+                                    $i=$tasklist['ID'];
                             }
                         ?>
                     </tbody>
