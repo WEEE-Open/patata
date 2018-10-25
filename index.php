@@ -49,13 +49,10 @@
 
                                     function __construct(){
 
-                                        function display_ct(){
-                                            
                                         $this->open('patabase.db');
                                     }
-                                }
                             }
-
+                            
                             $db = new MyDB();
                             $result = $db->query('SELECT ID, Priority, Title,
                                                 Description, Maintainer
@@ -64,11 +61,13 @@
                                                 ORDER BY ID');
                                                        
                             while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
-                                    $mantainer[$tasklist['ID']]=array();
+                                $mantainer[$tasklist['ID']]=array();
                             }
+
                             while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
                                 array_push($mantainer[$tasklist['ID']],$tasklist['Maintainer']);
                             }
+                            
                             $i=0;
                             while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
                                     if($tasklist['ID']!=$i){
