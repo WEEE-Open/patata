@@ -34,13 +34,21 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <script type="text/javascript"> 
+                            function display_t(){
+                                var refresh=1000;
+                                mytime=setTimeout('display_task()',refresh)
+                            }
+
+                            function display_task() {
+                                document.getElementById('ct').innerHTML = x1
+                            }
+                    </script>
                         <?php
-                            $taskin = file_get_contents("task.json");
-                            $obj = json_decode("$taskin", TRUE);
                             class MyDB extends SQLite3
                                 {
                                     function __construct()
-                                    {
+                                    {function display_ct() {
                                         $this->open('patabase.db');
                                     }
                                 }
@@ -51,7 +59,7 @@
                                                 FROM task LEFT JOIN t_maintainer ON ID=T_ID 
                                                 WHERE Done = 0
                                                 ORDER BY ID');
-                                                        
+                                                       
                             while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
                                     $mantainer[$tasklist['ID']]=array();
                             }
