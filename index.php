@@ -45,13 +45,16 @@
                             }
                     </script>
                         <?php
-                            class MyDB extends SQLite3
-                                {
-                                    function __construct()
-                                    {function display_ct() {
+                            class MyDB extends SQLite3{
+
+                                    function __construct(){
+
+                                        function display_ct(){
+                                            
                                         $this->open('patabase.db');
                                     }
                                 }
+                            }
 
                             $db = new MyDB();
                             $result = $db->query('SELECT ID, Priority, Title,
