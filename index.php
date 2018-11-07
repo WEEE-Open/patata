@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="icon" type="image/svg+xml" href="patata.svg">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
         <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
@@ -22,74 +23,67 @@
 
             <hr/>
 
-            <div class="task">
-                <h5 class="text-center">Tasklist</h5>
-                <table class="table table-striped " style="width: 70%; margin: 0 auto;">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Priority</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Maintainer</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <script type="text/javascript"> 
-                            function display_t(){
-                                var refresh=1000;
-                                mytime=setTimeout('display_task()',refresh)
-                            }
-
-                            function display_task() {
-                                document.getElementById('ct').innerHTML = x1
-                            }
-                    </script>
-                        <?php
-                            class MyDB extends SQLite3{
-
-                                    function __construct(){
-
-                                        $this->open('patabase.db');
-                                    }
-                            }
-                            
-                            $db = new MyDB();
-                            $result = $db->query('SELECT ID, Priority, Title,
-                                                Description, Maintainer
-                                                FROM task LEFT JOIN t_maintainer ON ID=T_ID 
-                                                WHERE Done = 0
-                                                ORDER BY ID');
-                                                       
-                            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
-                                $mantainer[$tasklist['ID']]=array();
-                            }
-
-                            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
-                                array_push($mantainer[$tasklist['ID']],$tasklist['Maintainer']);
-                            }
-                            
-                            $i=0;
-                            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
-                                    if($tasklist['ID']!=$i){
-                                        echo "<tr>";
-                                        echo "<td>".$tasklist['ID']."</td>";
-                                        echo "<td>".$tasklist['Priority']."</td>";
-                                        echo "<td>".$tasklist['Title']."</td>";
-                                        echo "<td>";
-                                        echo isset($tasklist['Description']) ? $tasklist['Description']: "";
-                                        echo "</td>";
-                                        echo "<td>".implode(', ',$mantainer[$tasklist['ID']])."</td>";
-                                        echo "</tr>";
-                                    }
-                                    $i=$tasklist['ID'];
-                            }
-                        ?>
-                    </tbody>
-                </table> 
+            <div id='tasktable'>
+                <div class="task">
+                    <h5 class="text-center">Tasklist</h5>
+                    <table class="table table-striped " style="width: 70%; margin: 0 auto;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Priority</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Maintainer</th>
+                            </tr>
+                        </thead>
+                        <tbody>                                    
+                            <?php
+                                class MyDB extends SQLite3{
+                                        function __construct(){
+                                            $this->open('patabase.db');
+                                        }
+                                }
+                                $db = new MyDB();
+                                $result = $db->query('SELECT ID, Priority, Title
+                                                    FROM task 
+                                                    WHERE Done = 0
+                                                    ORDER BY ID');
+                                $result2 = $db->query('SELECT T_ID, Maintainer
+                                                    FROM T_MAINTAINER
+                                                    ORDER BY T_ID');
+                                while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
+                                    $mantainer[$temp['T_ID']]=array();
+                                }
+                                while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
+                                    //$mantainer[$temp['ID']]=array();              // Why do we need two cycle?
+                                    array_push($mantainer[$temp['T_ID']],$temp['Maintainer']);
+                                }
+                                while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
+                                    echo "<tr>";
+                                    echo "<td>".$tasklist['ID']."</td>";
+                                    echo "<td>".$tasklist['Priority']."</td>";
+                                    echo "<td>".$tasklist['Title']."</td>";
+                                    echo "<td>";
+                                    echo isset($tasklist['Description']) ? $tasklist['Description']: "";
+                                    echo "</td>";
+                                    echo "<td>";
+                                    echo isset($mantainer[$tasklist['ID']]) ? implode(', ',$mantainer[$tasklist['ID']]) : "";
+                                    echo "</td>";
+                                    echo "</tr>";
+                                }
+                            ?>                                            
+                        </tbody>                 
+                    </table> 
+                </div>  
             </div>
 
-            <hr/>
+            <script type="text/javascript"> //Reload task table every second
+                var $tasktable = $("#tasktable");
+                setInterval(function () {
+                    $tasktable.load("index.php #tasktable");
+                }, 1000);
+            </script> 
+            <hr/>                          
 
             <div class="row">
                 <div class="col-md-6">
@@ -206,20 +200,20 @@
             </div>
         </div>
 
-        <script type="text/javascript"> 
-            function display_c(){
+        <script type="text/javascript">
+            function display_c(){       //Refresh time for the date function
                 var refresh=1000;
                 mytime=setTimeout('display_ct()',refresh)
             }
 
-            function addZero(i) {
+            function addZero(i) {       
                 if (i < 10) {
                     i = "0" + i;
                 }
                 return i;
             }
 
-            function display_ct() {
+            function display_ct() {     //Date generator function
                 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 var x = new Date()
                 var d = addZero(x.getDate())
@@ -243,9 +237,11 @@
                 $obj2 = json_decode("$quotesin", TRUE);
                 $num_quotes = count($obj2) - 1;
                 $quote_refresh = 5; // In seconds
-
+            
+            //display_q() Refresh time function for the quotes
+            //display_qt() Quote string generator
                 echo "
-                function display_q(){
+                function display_q(){                                      
                     var refresh=1000*$quote_refresh;
                     mytime=setTimeout('display_qt()',refresh)
                 }
