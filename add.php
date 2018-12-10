@@ -22,15 +22,47 @@
             </div>
 
             <hr/>
+            
+             <div id='dbEdit'>
+                <?php
+                
+                class MyDB extends SQLite3{
+                    function __construct(){
+                    $this->open('patabase.db');
+                    }
+                }
+                
+                $db = new MyDB();
+                
+                if (isset($_POST['title'])):
+                    $title = $_POST['title'];
+                    if(empty($_POST['idn'])):
+                        $idn = "";
+                    else:
+                        $idn = $_POST['idn'];
+                    endif;
+                    $type = $_POST['tasktype'];
+                    $description = $_POST['description'];
+                    $edit = $_POST['submit'];
+                    if($edit === "Save"):
+                        $db->query("UPDATE Task SET Title = '$title', Description = '$description', TaskType = '$type' 
+                                    WHERE ID = $idn");
+                    elseif($edit === "Add"):
+                        $db->query("INSERT INTO Task (Title,Description,TaskType)
+                                    VALUES ('$title', '$description', '$type')");
+                    endif;
+                endif;
 
+                ?>
+            </div>
+            
             <div id='tasktable'>
                 <div class="task">
                     <h5 class="text-center">Tasklist</h5>
                     <table class="table table-striped " style="width: 70%; margin: 0 auto;">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Priority</th>
+                                <th>Type</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Maintainer</th>
@@ -38,12 +70,6 @@
                         </thead>
                         <tbody>                                    
                             <?php
-                                class MyDB extends SQLite3{
-                                        function __construct(){
-                                            $this->open('patabase.db');
-                                        }
-                                }
-                                $db = new MyDB();
                                 $result = $db->query('SELECT ID, Tasktype, Title, Description, Done
                                                     FROM TASK 
                                                     WHERE Done = 0
@@ -55,34 +81,35 @@
                                     $mantainer[$temp['T_ID']]=array();
                                 }
                                 while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
-                                    //$mantainer[$temp['ID']]=array();              // Why do we need two cycle?
+                                    //$mantainer[$temp['T_ID']]=array();              // Why do we need two cycle?
                                     array_push($mantainer[$temp['T_ID']],$temp['Maintainer']);
                                 }
-                                while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
-                                    echo "<tr>";
-                                    echo "<td>".$tasklist['ID']."</td>";
-                                    echo "<td>".$tasklist['Priority']."</td>";
-                                    echo "<td>".$tasklist['Title']."</td>";
-                                    echo "<td>";
-                                    echo isset($tasklist['Description']) ? $tasklist['Description']: "";
-                                    echo "</td>";
-                                    echo "<td>";
-                                    echo isset($mantainer[$tasklist['ID']]) ? implode(', ',$mantainer[$tasklist['ID']]) : "";
-                                    echo "</td>";
-                                    echo "</tr>";
-                                }
-                            ?>                                            
+                                while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)):
+                                    
+                                    ?><form method="post" action="add.php">
+                                    <tr>
+                                    <input type="hidden" name="idn" value="<?= $tasklist['ID'] ?>">
+                                    <td><input type="text" name="tasktype" size="1" value="<?= $tasklist['TaskType'] ?>"></td>
+                                    <td><input type="text" name="title" size="" value="<?= $tasklist['Title'] ?>"></td>
+                                    <td><input type="text" name="description" size="" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
+                                    <td><input type="text" name="maintainer" size="" value="<?= isset($mantainer[$tasklist['ID']]) ? implode(', ',$mantainer[$tasklist['ID']]) : "" ?>"></td>
+                                    <td><input type="submit" name="submit" value="Save"></td>
+                                    </tr>
+                                    </form>
+                                <?php endwhile; ?>
+                                <form method="post" action="add.php">
+                                    <tr>
+                                    <td><input type="text" name="tasktype" size="1"></td>
+                                    <td><input type="text" name="title" size=""></td>
+                                    <td><input type="text" name="description" size=""></td>
+                                    <td><input type="text" name="maintainer" size="30"></td>
+                                    <td><input type="submit" name="submit" value="Add"></td>
+                                    </tr>
+                                    </form>
                         </tbody>                 
                     </table> 
                 </div>  
             </div>
-
-            <script type="text/javascript"> //Reload task table every second
-                var $tasktable = $("#tasktable");
-                setInterval(function () {
-                    $tasktable.load("index.php #tasktable");
-                }, 1000);
-            </script> 
             <hr/>                          
 
             <div class="row">
@@ -252,9 +279,15 @@
                     var val = Math.floor(Math.random() * $num_quotes)
                     document.getElementById('quotesbox').innerHTML = quotes_array[val].quote
                     document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author
+                    if(typeof quotes_array[val].context !== 'undefined'){
+                        document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author + \" \" + quotes_array[val].context
+                    }
+                    else{
+                    document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author
+                    }
                     display_q();
                 }";
             ?>
         </script>
     </body>
-</html> 
+</html>

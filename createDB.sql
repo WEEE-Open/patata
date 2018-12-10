@@ -1,14 +1,15 @@
-DROP TABLE IF EXISTS TASK;
 DROP TABLE IF EXISTS T_MAINTAINER;
+DROP TABLE IF EXISTS TASK;
 
 CREATE TABLE TASK (
 
     ID integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Title CHAR(50) NOT NULL,
+	Title CHAR(30) NOT NULL,
 	Description TEXT,
-	Priority CHAR(1) NOT NULL,
+	Durate INT NOT NULL,
+	TaskType CHAR(1) NOT NULL,
     Done BIT DEFAULT 0,
-    CONSTRAINT CHK_Pri CHECK (Priority=='L' OR Priority=='M' OR Priority=='H')
+    CONSTRAINT CHK_Pri CHECK (TaskType=='I' OR TaskType=='E' OR TaskType=='S' OR TaskType=='C')
 );
 
 CREATE TABLE T_MAINTAINER (
@@ -19,3 +20,5 @@ CREATE TABLE T_MAINTAINER (
         REFERENCES TASK(ID)
         ON UPDATE CASCADE
 );
+
+-- 💻 ⚡ 🎮 🍀

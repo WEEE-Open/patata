@@ -1,15 +1,15 @@
-INSERT INTO Task (Title,Description,Priority)
-VALUES ('test','asd','L');
-INSERT INTO Task (Title,Priority,Done)
-VALUES ('scrivere o''cane è bello','M',1);
-INSERT INTO Task (Title,Description,Priority)
-VALUES ('robe','lel','H');
-INSERT INTO Task (Title,Priority)
-VALUES ('asdare','L');
-INSERT INTO Task (Title,Priority)
-VALUES ('fraccare','L');
-INSERT INTO Task (Title,Description,Priority)
-VALUES ('guardare gente che fa cose','asd','H');
+INSERT INTO Task (Title,Description,TaskType,Durate)
+VALUES ('test','asd','C',16);
+INSERT INTO Task (Title,TaskType,Done,Durate)
+VALUES ('scrivere o''cane è bello','I',1,12);
+INSERT INTO Task (Title,Description,TaskType,Durate)
+VALUES ('robe','lel','S',1);
+INSERT INTO Task (Title,TaskType,Durate)
+VALUES ('asdare','I',120);
+INSERT INTO Task (Title,TaskType,Durate)
+VALUES ('fraccare','E',120);
+INSERT INTO Task (Title,Description,TaskType,Durate)
+VALUES ('guardare gente che fa cose','asd','C',125);
 
 INSERT INTO T_MAINTAINER (T_ID,Maintainer)
 VALUES (2,'asd');
