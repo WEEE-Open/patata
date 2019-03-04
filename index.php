@@ -29,10 +29,10 @@
                     <table class="table table-striped " style="width: 70%; margin: 0 auto;">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Priority</th>
                                 <th>Title</th>
                                 <th>Description</th>
+                                <th>Durate (Minutes)</th>
                                 <th>Maintainer</th>
                             </tr>
                         </thead>
@@ -44,7 +44,7 @@
                                         }
                                 }
                                 $db = new MyDB();
-                                $result = $db->query('SELECT ID, Tasktype, Title, Description, Done
+                                $result = $db->query('SELECT ID, Tasktype, Title, Description, Durate, Done
                                                     FROM TASK 
                                                     WHERE Done = 0
                                                     ORDER BY ID');
@@ -52,22 +52,22 @@
                                                     FROM T_MAINTAINER
                                                     ORDER BY T_ID');
                                 while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
-                                    $mantainer[$temp['T_ID']]=array();
+                                    $maintainer[$temp['T_ID']]=array();
                                 }
                                 while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
-                                    //$mantainer[$temp['ID']]=array();              // Why do we need two cycle?
-                                    array_push($mantainer[$temp['T_ID']],$temp['Maintainer']);
+                                    //$maintainer[$temp['T_ID']]=array();              // Why do we need two cycle?
+                                    array_push($maintainer[$temp['T_ID']],$temp['Maintainer']);
                                 }
                                 while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
                                     echo "<tr>";
-                                    echo "<td>".$tasklist['ID']."</td>";
-                                    echo "<td>".$tasklist['Priority']."</td>";
+                                    echo "<td>".$tasklist['TaskType']."</td>";
                                     echo "<td>".$tasklist['Title']."</td>";
                                     echo "<td>";
                                     echo isset($tasklist['Description']) ? $tasklist['Description']: "";
                                     echo "</td>";
+                                    echo "<td>".$tasklist['Durate']."</td>";
                                     echo "<td>";
-                                    echo isset($mantainer[$tasklist['ID']]) ? implode(', ',$mantainer[$tasklist['ID']]) : "";
+                                    echo isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "";
                                     echo "</td>";
                                     echo "</tr>";
                                 }
