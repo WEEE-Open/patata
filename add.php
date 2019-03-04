@@ -53,6 +53,9 @@
                     elseif($edit === "Add"):
                         $db->query("INSERT INTO Task (Title,Description,Durate,TaskType)
                                     VALUES ('$title', '$description', '$durate', '$type')");
+                        $temp = $db->query("SELECT MAX(ID) ID FROM TASK");
+                        $temp = $temp->fetchArray(SQLITE3_ASSOC);
+                        $idn = $temp['ID'];
                     endif;
                     foreach($maintainer as $temp_maintainer){
                         $db->query("INSERT INTO T_Maintainer (T_ID,Maintainer)
