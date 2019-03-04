@@ -4,10 +4,10 @@ DROP TABLE IF EXISTS TASK;
 CREATE TABLE TASK (
 
     ID integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	Title CHAR(30) NOT NULL,
+	TaskType CHAR(1) NOT NULL,
+    Title CHAR(30) NOT NULL,
 	Description TEXT,
 	Durate INT NOT NULL,
-	TaskType CHAR(1) NOT NULL,
     Done BIT DEFAULT 0,
     CONSTRAINT CHK_Pri CHECK (TaskType=='I' OR TaskType=='E' OR TaskType=='S' OR TaskType=='C')
 );

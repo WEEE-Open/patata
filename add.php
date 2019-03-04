@@ -43,17 +43,22 @@
                     endif;
                     $type = $_POST['tasktype'];
                     $description = $_POST['description'];
+                    $durate = $_POST['durate'];
+                    $maintainer = explode(',' ,$_POST['maintainer']);
                     $edit = $_POST['submit'];
                     if($edit === "Save"):
-                        $db->query("UPDATE Task SET Title = '$title', Description = '$description', TaskType = '$type' 
-                                    WHERE ID = $idn");
+                        $db->query("UPDATE Task SET Title = '$title', Description = '$description', Durate = '$durate',
+                                    TaskType = '$type' WHERE ID = $idn");
+                        $db->query("DELETE FROM T_Maintainer WHERE T_ID = $idn");
                     elseif($edit === "Add"):
-                        $db->query("INSERT INTO Task (Title,Description,TaskType)
-                                    VALUES ('$title', '$description', '$type')");
+                        $db->query("INSERT INTO Task (Title,Description,Durate,TaskType)
+                                    VALUES ('$title', '$description', '$durate', '$type')");
                     endif;
-                endif;
-
-                ?>
+                    foreach($maintainer as $temp_maintainer){
+                        $db->query("INSERT INTO T_Maintainer (T_ID,Maintainer)
+                                    VALUES ('$idn', '$temp_maintainer')");
+                    }
+                endif; ?>
             </div>
             
             <div id='tasktable'>
@@ -65,12 +70,13 @@
                                 <th>Type</th>
                                 <th>Title</th>
                                 <th>Description</th>
+                                <th>Durate (Minutes)</th>
                                 <th>Maintainer</th>
                             </tr>
                         </thead>
                         <tbody>                                    
                             <?php
-                                $result = $db->query('SELECT ID, Tasktype, Title, Description, Done
+                                $result = $db->query('SELECT ID, Tasktype, Title, Description, Durate, Done
                                                     FROM TASK 
                                                     WHERE Done = 0
                                                     ORDER BY ID');
@@ -78,11 +84,11 @@
                                                     FROM T_MAINTAINER
                                                     ORDER BY T_ID');
                                 while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
-                                    $mantainer[$temp['T_ID']]=array();
+                                    $maintainer[$temp['T_ID']]=array();
                                 }
                                 while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
-                                    //$mantainer[$temp['T_ID']]=array();              // Why do we need two cycle?
-                                    array_push($mantainer[$temp['T_ID']],$temp['Maintainer']);
+                                    //$maintainer[$temp['T_ID']]=array();              // Why do we need two cycle?
+                                    array_push($maintainer[$temp['T_ID']],$temp['Maintainer']);
                                 }
                                 while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)):
                                     
@@ -92,7 +98,8 @@
                                     <td><input type="text" name="tasktype" size="1" value="<?= $tasklist['TaskType'] ?>"></td>
                                     <td><input type="text" name="title" size="" value="<?= $tasklist['Title'] ?>"></td>
                                     <td><input type="text" name="description" size="" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
-                                    <td><input type="text" name="maintainer" size="" value="<?= isset($mantainer[$tasklist['ID']]) ? implode(', ',$mantainer[$tasklist['ID']]) : "" ?>"></td>
+                                    <td><input type="text" name="durate" size="3" value="<?= $tasklist['Durate'] ?>"></td>
+                                    <td><input type="text" name="maintainer" size="" value="<?= isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "" ?>"></td>
                                     <td><input type="submit" name="submit" value="Save"></td>
                                     </tr>
                                     </form>
@@ -102,6 +109,7 @@
                                     <td><input type="text" name="tasktype" size="1"></td>
                                     <td><input type="text" name="title" size=""></td>
                                     <td><input type="text" name="description" size=""></td>
+                                    <td><input type="text" name="durate" size="3"></td>
                                     <td><input type="text" name="maintainer" size="30"></td>
                                     <td><input type="submit" name="submit" value="Add"></td>
                                     </tr>
