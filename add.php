@@ -102,12 +102,14 @@
                                     <tr>
                                     <input type="hidden" name="idn" value="<?= $tasklist['ID'] ?>"> 
                                     
-                                    <td><select>
-                                        <option value="I">💻</option>
-                                        <option value="E">⚡</option>
-                                        <option value="S">🎮</option>
-                                        <option value="C">🍀</option>
-                                    </select><input type="text" name="tasktype" size="1" value="<?= $tasklist['TaskType'] ?>"></td>
+                                    <td><select required>
+                                        <?php foreach($emoText as $text => $emoji){?>
+                                            <option value="<?= $text ?>"
+                                            <?php if($text===$tasklist['TaskType']) ? echo " selected": "" ?>><?= $emoji ?></option>
+                                        <?php } ?>
+                                        
+                                    </select>
+                                    </td>
                                     <td><input type="text" name="title" size="" value="<?= $tasklist['Title'] ?>"></td>
                                     <td><input type="text" name="description" size="" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
                                     <td><input type="text" name="durate" size="3" value="<?= $tasklist['Durate'] ?>"></td>
@@ -120,10 +122,10 @@
                                     <tr>
                                     <td><select required>
                                         <option></option>
-                                        <?foreach($emoText as $text => $emoji){
-                                            echo "<option value=\"". $text ."\">". $emoji ."</option>";
-                                        }
-                                        ?>
+                                        <?php foreach($emoText as $text => $emoji){
+                                            ?><option value="<?= $text ?>"><?= $emoji ?></option>
+                                        <?php } ?>
+                                        
                                     </select></td>
                                     <td><input type="text" name="title" size=""></td>
                                     <td><input type="text" name="description" size=""></td>
