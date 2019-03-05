@@ -93,19 +93,21 @@
                                     //$maintainer[$temp['T_ID']]=array();              // Why do we need two cycle?
                                     array_push($maintainer[$temp['T_ID']],$temp['Maintainer']);
                                 }
+
+                                $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
+                                
                                 while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)):
                                     
                                     ?><form method="post" action="add.php">
                                     <tr>
-                                    <input type="hidden" name="idn" value="<?= $tasklist['ID'] ?>">
-                                    <select>
+                                    <input type="hidden" name="idn" value="<?= $tasklist['ID'] ?>"> 
+                                    
+                                    <td><select>
                                         <option value="I">💻</option>
                                         <option value="E">⚡</option>
                                         <option value="S">🎮</option>
                                         <option value="C">🍀</option>
-                                    </select> 
-                                    
-                                    <td><input type="text" name="tasktype" size="1" value="<?= $tasklist['TaskType'] ?>"></td>
+                                    </select><input type="text" name="tasktype" size="1" value="<?= $tasklist['TaskType'] ?>"></td>
                                     <td><input type="text" name="title" size="" value="<?= $tasklist['Title'] ?>"></td>
                                     <td><input type="text" name="description" size="" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
                                     <td><input type="text" name="durate" size="3" value="<?= $tasklist['Durate'] ?>"></td>
@@ -116,7 +118,13 @@
                                 <?php endwhile; ?>
                                 <form method="post" action="add.php">
                                     <tr>
-                                    <td><input type="text" name="tasktype" size="1"></td>
+                                    <td><select required>
+                                        <option></option>
+                                        <?foreach($emoText as $text => $emoji){
+                                            echo "<option value=\"". $text ."\">". $emoji ."</option>";
+                                        }
+                                        ?>
+                                    </select></td>
                                     <td><input type="text" name="title" size=""></td>
                                     <td><input type="text" name="description" size=""></td>
                                     <td><input type="text" name="durate" size="3"></td>
