@@ -98,6 +98,13 @@
                                     ?><form method="post" action="add.php">
                                     <tr>
                                     <input type="hidden" name="idn" value="<?= $tasklist['ID'] ?>">
+                                    <select>
+                                        <option value="I">💻</option>
+                                        <option value="E">⚡</option>
+                                        <option value="S">🎮</option>
+                                        <option value="C">🍀</option>
+                                    </select> 
+                                    
                                     <td><input type="text" name="tasktype" size="1" value="<?= $tasklist['TaskType'] ?>"></td>
                                     <td><input type="text" name="title" size="" value="<?= $tasklist['Title'] ?>"></td>
                                     <td><input type="text" name="description" size="" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
