@@ -29,7 +29,7 @@
                     <table class="table table-striped " style="width: 70%; margin: 0 auto;">
                         <thead>
                             <tr>
-                                <th>Priority</th>
+                                <th>Type</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Durate (Minutes)</th>
@@ -58,9 +58,13 @@
                                     //$maintainer[$temp['T_ID']]=array();              // Why do we need two cycle?
                                     array_push($maintainer[$temp['T_ID']],$temp['Maintainer']);
                                 }
+
+                                $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
+                                $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
+
                                 while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
                                     echo "<tr>";
-                                    echo "<td>".$tasklist['TaskType']."</td>";
+                                    echo "<td title=\"${emoDescription[$tasklist['TaskType']]}\">".$emoText[$tasklist['TaskType']]."</td>";
                                     echo "<td>".$tasklist['Title']."</td>";
                                     echo "<td>";
                                     echo isset($tasklist['Description']) ? $tasklist['Description']: "";

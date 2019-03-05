@@ -43,12 +43,20 @@
                     endif;
                     $type = $_POST['tasktype'];
                     $description = $_POST['description'];
-                    $durate = $_POST['durate'];
+                    $durate = (int)$_POST['durate'];
                     $maintainer = explode(',' ,$_POST['maintainer']);
+                    foreach($maintainer as &$temp_maintainer) {
+                        $temp_maintainer = trim($temp_maintainer);
+                    }
+                    unset($temp_maintainer);
                     $edit = $_POST['submit'];
                     if($edit === "Save"):
-                        $db->query("UPDATE Task SET Title = '$title', Description = '$description', Durate = '$durate',
-                                    TaskType = '$type' WHERE ID = $idn");
+                        $stmt = $db->prepare("UPDATE Task SET Title = ?, Description = ?, Durate = ?, TaskType = ? WHERE ID = ?");
+                        $db->bindParam($title);
+                        $db->bindParam($description);
+                        $db->bindParam($durate);
+                        $db->bindParam($type);
+                        $db->bindParam($idn);
                         $db->query("DELETE FROM T_Maintainer WHERE T_ID = $idn");
                     elseif($edit === "Add"):
                         $db->query("INSERT INTO Task (Title,Description,Durate,TaskType)
@@ -95,42 +103,44 @@
                                 }
 
                                 $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
-                                
+                                $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
+
                                 while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)):
                                     
                                     ?><form method="post" action="add.php">
                                     <tr>
                                     <input type="hidden" name="idn" value="<?= $tasklist['ID'] ?>"> 
                                     
-                                    <td><select required>
-                                        <?php foreach($emoText as $text => $emoji){?>
-                                            <option value="<?= $text ?>"
-                                            <?php if($text===$tasklist['TaskType']) ? echo " selected": "" ?>><?= $emoji ?></option>
-                                        <?php } ?>
-                                        
-                                    </select>
+                                    <td>
+                                        <select required name="tasktype">
+                                            <?php foreach($emoText as $text => $emoji){?>
+                                                <option value="<?= $text ?>"
+                                                <?= $text === $tasklist['TaskType'] ? " selected" : "" ?>
+                                                title="<?= $emoDescription[$text] ?>" ><?= "$emoji $emoDescription[$text]" ?></option>
+                                            <?php } ?>
+                                        </select>
                                     </td>
-                                    <td><input type="text" name="title" size="" value="<?= $tasklist['Title'] ?>"></td>
-                                    <td><input type="text" name="description" size="" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
+                                    <td><input type="text" name="title" value="<?= $tasklist['Title'] ?>"></td>
+                                    <td><input type="text" name="description" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
                                     <td><input type="text" name="durate" size="3" value="<?= $tasklist['Durate'] ?>"></td>
-                                    <td><input type="text" name="maintainer" size="" value="<?= isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "" ?>"></td>
+                                    <td><input type="text" name="maintainer" value="<?= isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "" ?>"></td>
                                     <td><input type="submit" name="submit" value="Save"></td>
                                     </tr>
                                     </form>
                                 <?php endwhile; ?>
                                 <form method="post" action="add.php">
                                     <tr>
-                                    <td><select required>
+                                    <td><select required name="tasktype">
                                         <option></option>
                                         <?php foreach($emoText as $text => $emoji){
-                                            ?><option value="<?= $text ?>"><?= $emoji ?></option>
+                                            ?><option value="<?= $text ?>"><?= "$emoji $emoDescription[$text]" ?></option>
                                         <?php } ?>
                                         
                                     </select></td>
-                                    <td><input type="text" name="title" size=""></td>
-                                    <td><input type="text" name="description" size=""></td>
+                                    <td><input type="text" name="title"></td>
+                                    <td><input type="text" name="description"></td>
                                     <td><input type="text" name="durate" size="3"></td>
-                                    <td><input type="text" name="maintainer" size="30"></td>
+                                    <td><input type="text" name="maintainer"></td>
                                     <td><input type="submit" name="submit" value="Add"></td>
                                     </tr>
                                     </form>
