@@ -51,16 +51,28 @@
                     unset($temp_maintainer);
                     $edit = $_POST['submit'];
                     if($edit === "Save"):
-                        $stmt = $db->prepare("UPDATE Task SET Title = ?, Description = ?, Durate = ?, TaskType = ? WHERE ID = ?");
-                        $db->bindParam($title);
-                        $db->bindParam($description);
-                        $db->bindParam($durate);
-                        $db->bindParam($type);
-                        $db->bindParam($idn);
-                        $db->query("DELETE FROM T_Maintainer WHERE T_ID = $idn");
+                        if($stmt = $db->prepare('UPDATE "Task" 
+                                                SET "Title" = :title, "Description" = :descr, "Durate" = :durate, "TaskType" = :tasktype
+                                                WHERE "ID" = :id')):
+                            $stmt->bindValue(':title',$title);
+                            $stmt->bindValue(':descr',$description);
+                            $stmt->bindValue(':durate',$durate);
+                            $stmt->bindValue(':tasktype',$type);
+                            $stmt->bindValue(':id',$idn);
+                            $stmt = $stmt->execute();
+                            
+                            $db->query("DELETE FROM T_Maintainer WHERE T_ID = $idn");
+                        endif;
                     elseif($edit === "Add"):
-                        $db->query("INSERT INTO Task (Title,Description,Durate,TaskType)
-                                    VALUES ('$title', '$description', '$durate', '$type')");
+                        $stmt = $db->prepare("INSERT INTO Task (Title,Description,Durate,TaskType)
+                                    VALUES (:title, :description, :durate, :type)");
+                        $stmt->bindValue(':title',$title);
+                        $stmt->bindValue(':description',$description);
+                        $stmt->bindValue(':durate',$durate);
+                        $stmt->bindValue(':type',$type);
+
+                        $stmt = $stmt->execute();
+
                         $temp = $db->query("SELECT MAX(ID) ID FROM TASK");
                         $temp = $temp->fetchArray(SQLITE3_ASSOC);
                         $idn = $temp['ID'];
