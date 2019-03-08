@@ -54,6 +54,7 @@
                         if($stmt = $db->prepare('UPDATE "Task" 
                                                 SET "Title" = :title, "Description" = :descr, "Durate" = :durate, "TaskType" = :tasktype
                                                 WHERE "ID" = :id')):
+                           
                             $stmt->bindValue(':title',$title);
                             $stmt->bindValue(':descr',$description);
                             $stmt->bindValue(':durate',$durate);
@@ -66,6 +67,7 @@
                     elseif($edit === "Add"):
                         $stmt = $db->prepare("INSERT INTO Task (Title,Description,Durate,TaskType)
                                     VALUES (:title, :description, :durate, :type)");
+                        
                         $stmt->bindValue(':title',$title);
                         $stmt->bindValue(':description',$description);
                         $stmt->bindValue(':durate',$durate);
