@@ -1,5 +1,5 @@
 <?php
-define('PATABASE_PATH', 'patabase.db');
+define('PATABASE_PATH', '../patabase.db');
 
 class MyDB extends SQLite3 {
     public function __construct($rw = true)
