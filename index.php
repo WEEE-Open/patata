@@ -1,3 +1,25 @@
+<?php
+include 'db.php';
+include 'functions.php';
+if(isset($_GET['quote'])) {
+    $quote = get_random_quote();
+    header('Content-Type', 'application/json');
+    echo json_encode($quote);
+    exit(0);
+} else if(isset($_GET['tasks'])) {
+	?>
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<title>Patatasks™</title>
+	</head>
+	<body onload="display_ct(), auto_update_qt()">
+        <?php print_tasktable() ?>
+	</body>
+	<?php
+	exit(0);
+}
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,7 +28,9 @@
         <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
         <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     </head>
-    <body onload="display_ct(), display_qt()">
+    <?php
+    ?>
+    <body onload="display_ct(), auto_update_qt()">
         <div class="container">
             <h1>Patata</h1>
 
@@ -19,73 +43,43 @@
                     <div align=right id='quotesbox'></div>
                     <div align=right id='authorbox'></div>
                 </div>
+	            <script>
+                    /**
+                     * Update quotes every N seconds
+                     */
+                    function auto_update_qt(){
+                        let refresh = 1000 * 5;
+
+                        fetch('?quote')
+	                        .then(response => response.json())
+                            .then(json => display_qt(json))
+							.then(() => setTimeout(auto_update_qt, refresh));
+                    }
+
+                    /**
+                     * Display a quote
+                     */
+                    function display_qt(quoteJson) {
+                        document.getElementById('quotesbox').textContent = quoteJson['quote'];
+                        if("context" in quoteJson) {
+                            document.getElementById('authorbox').textContent = "Cit. " + quoteJson['author'] + " " + quoteJson['context'];
+                        } else {
+                            document.getElementById('authorbox').textContent = "Cit. " + quoteJson['author'];
+                        }
+                    }
+	            </script>
             </div>
 
             <hr/>
 
-            <div id='tasktable'>
-                <div class="task">
-                    <h5 class="text-center">Tasklist</h5>
-                    <table class="table table-striped " style="width: 70%; margin: 0 auto;">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Durate (Minutes)</th>
-                                <th>Maintainer</th>
-                            </tr>
-                        </thead>
-                        <tbody>                                    
-                            <?php
-                                class MyDB extends SQLite3{
-                                        function __construct(){
-                                            $this->open('patabase.db');
-                                        }
-                                }
-                                $db = new MyDB();
-                                $result = $db->query('SELECT ID, Tasktype, Title, Description, Durate, Done
-                                                    FROM TASK 
-                                                    WHERE Done = 0
-                                                    ORDER BY ID');
-                                $result2 = $db->query('SELECT T_ID, Maintainer
-                                                    FROM T_MAINTAINER
-                                                    ORDER BY T_ID');
-                                while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
-                                    $maintainer[$temp['T_ID']]=array();
-                                }
-                                while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
-                                    //$maintainer[$temp['T_ID']]=array();              // Why do we need two cycle?
-                                    array_push($maintainer[$temp['T_ID']],$temp['Maintainer']);
-                                }
+            <?php print_tasktable() ?>
 
-                                $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
-                                $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
-
-                                while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
-                                    echo "<tr>";
-                                    echo "<td title=\"${emoDescription[$tasklist['TaskType']]}\">".$emoText[$tasklist['TaskType']]."</td>";
-                                    echo "<td>".$tasklist['Title']."</td>";
-                                    echo "<td>";
-                                    echo isset($tasklist['Description']) ? $tasklist['Description']: "";
-                                    echo "</td>";
-                                    echo "<td>".$tasklist['Durate']."</td>";
-                                    echo "<td>";
-                                    echo isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "";
-                                    echo "</td>";
-                                    echo "</tr>";
-                                }
-                            ?>                                            
-                        </tbody>                 
-                    </table> 
-                </div>  
-            </div>
-
-            <script type="text/javascript"> //Reload task table every second
-                var $tasktable = $("#tasktable");
+            <script type="text/javascript">
+	            // Reload task table every N seconds
+                let $tasktable = $("#tasktable");
                 setInterval(function () {
-                    $tasktable.load("index.php #tasktable");
-                }, 1000);
+                    $tasktable.load("index.php?tasks #tasktable");
+                }, 3 * 1000);
             </script> 
             <hr/>                          
 
@@ -235,30 +229,6 @@
 
                 display_c();
             }
-
-            <?php
-                $quotesin = file_get_contents("quotes.json");
-                $obj2 = json_decode("$quotesin", TRUE);
-                $num_quotes = count($obj2) - 1;
-                $quote_refresh = 5; // In seconds
-            
-            //display_q() Refresh time function for the quotes
-            //display_qt() Quote string generator
-                echo "
-                function display_q(){                                      
-                    var refresh=1000*$quote_refresh;
-                    mytime=setTimeout('display_qt()',refresh)
-                }
-
-                function display_qt() {
-
-                    var quotes_array = $quotesin
-                    var val = Math.floor(Math.random() * $num_quotes)
-                    document.getElementById('quotesbox').innerHTML = quotes_array[val].quote
-                    document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author
-                    display_q();
-                }";
-            ?>
         </script>
     </body>
 </html> 

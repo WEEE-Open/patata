@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<?php include 'db.php'; ?>
 <html>
     <head>
         <link rel="icon" type="image/svg+xml" href="patata.svg">
@@ -25,13 +26,6 @@
             
              <div id='dbEdit'>
                 <?php
-                
-                class MyDB extends SQLite3{
-                    function __construct(){
-                    $this->open('patabase.db');
-                    }
-                }
-                
                 $db = new MyDB();
                 
                 if (isset($_POST['title'])):
