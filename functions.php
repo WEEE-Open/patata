@@ -52,15 +52,16 @@ function print_tasktable() {
 }
 
 /**
- * @param MyDB $db
- * @return array
+ * @param MyDB $db The patabase
+ * @param $done bool True if you only want completed tasks, false if you only want tasks that are still to do (default)
+ * @return array $result, $maintainer
  */
-function get_tasks_and_maintainers(MyDB $db): array
-{
-    $result = $db->query('SELECT ID, Tasktype, Title, Description, Durate, Done
+function get_tasks_and_maintainers(MyDB $db, bool $done = false): array {
+    $done = (int) $done;
+    $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done
                                             FROM TASK 
-                                            WHERE Done = 0
-                                            ORDER BY ID');
+                                            WHERE Done = $done
+                                            ORDER BY ID");
     $result2 = $db->query('SELECT T_ID, Maintainer
                                             FROM T_MAINTAINER
                                             ORDER BY T_ID');
