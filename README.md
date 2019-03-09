@@ -9,6 +9,6 @@ Information display system that shows a to-do list, date and time, random quotes
 ## Installation
 
 ```bash
-sqlite3 patabase.db < createDB.sql 
-sqlite3 patabase.db < populate.sql
+sqlite3 ../patabase.db < createDB.sql 
+sqlite3 ../patabase.db < populate.sql
 ```
