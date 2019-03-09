@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<?php include 'db.php'; ?>
+<?php
+include 'db.php';
+include 'functions.php';
+?>
 <html>
     <head>
         <link rel="icon" type="image/svg+xml" href="patata.svg">
@@ -7,7 +10,7 @@
         <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
         <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     </head>
-    <body onload="display_ct(), display_qt()">
+    <body onload="display_ct()">
         <div class="container">
             <h1>Patata</h1>
 
@@ -23,63 +26,7 @@
             </div>
 
             <hr/>
-            
-             <div id='dbEdit'>
-                <?php
-                $db = new MyDB();
-                
-                if (isset($_POST['title'])):
-                    $title = $_POST['title'];
-                    if(empty($_POST['idn'])):
-                        $idn = "";
-                    else:
-                        $idn = $_POST['idn'];
-                    endif;
-                    $type = $_POST['tasktype'];
-                    $description = $_POST['description'];
-                    $durate = (int)$_POST['durate'];
-                    $maintainer = explode(',' ,$_POST['maintainer']);
-                    foreach($maintainer as &$temp_maintainer) {
-                        $temp_maintainer = trim($temp_maintainer);
-                    }
-                    unset($temp_maintainer);
-                    $edit = $_POST['submit'];
-                    if($edit === "Save"):
-                        if($stmt = $db->prepare('UPDATE "Task" 
-                                                SET "Title" = :title, "Description" = :descr, "Durate" = :durate, "TaskType" = :tasktype
-                                                WHERE "ID" = :id')):
-                           
-                            $stmt->bindValue(':title',$title);
-                            $stmt->bindValue(':descr',$description);
-                            $stmt->bindValue(':durate',$durate);
-                            $stmt->bindValue(':tasktype',$type);
-                            $stmt->bindValue(':id',$idn);
-                            $stmt = $stmt->execute();
-                            
-                            $db->query("DELETE FROM T_Maintainer WHERE T_ID = $idn");
-                        endif;
-                    elseif($edit === "Add"):
-                        $stmt = $db->prepare("INSERT INTO Task (Title,Description,Durate,TaskType)
-                                    VALUES (:title, :description, :durate, :type)");
-                        
-                        $stmt->bindValue(':title',$title);
-                        $stmt->bindValue(':description',$description);
-                        $stmt->bindValue(':durate',$durate);
-                        $stmt->bindValue(':type',$type);
-
-                        $stmt = $stmt->execute();
-
-                        $temp = $db->query("SELECT MAX(ID) ID FROM TASK");
-                        $temp = $temp->fetchArray(SQLITE3_ASSOC);
-                        $idn = $temp['ID'];
-                    endif;
-                    foreach($maintainer as $temp_maintainer){
-                        $db->query("INSERT INTO T_Maintainer (T_ID,Maintainer)
-                                    VALUES ('$idn', '$temp_maintainer')");
-                    }
-                endif; ?>
-            </div>
-            
+	        <?php handle_post(); ?>
             <div id='tasktable'>
                 <div class="task">
                     <h5 class="text-center">Tasklist</h5>
@@ -93,65 +40,53 @@
                                 <th>Maintainer</th>
                             </tr>
                         </thead>
-                        <tbody>                                    
+                        <tbody>
                             <?php
-                                $result = $db->query('SELECT ID, Tasktype, Title, Description, Durate, Done
-                                                    FROM TASK 
-                                                    WHERE Done = 0
-                                                    ORDER BY ID');
-                                $result2 = $db->query('SELECT T_ID, Maintainer
-                                                    FROM T_MAINTAINER
-                                                    ORDER BY T_ID');
-                                while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
-                                    $maintainer[$temp['T_ID']]=array();
-                                }
-                                while ($temp = $result2->fetchArray(SQLITE3_ASSOC)){
-                                    //$maintainer[$temp['T_ID']]=array();              // Why do we need two cycle?
-                                    array_push($maintainer[$temp['T_ID']],$temp['Maintainer']);
-                                }
+                            $db = new MyDB();
+                            list($result, $maintainer) = get_tasks_and_maintainers($db);
 
-                                $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
-                                $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
+                            $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
+                            $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
 
-                                while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)):
-                                    
-                                    ?><form method="post" action="add.php">
-                                    <tr>
-                                    <input type="hidden" name="idn" value="<?= $tasklist['ID'] ?>"> 
-                                    
-                                    <td>
-                                        <select required name="tasktype">
-                                            <?php foreach($emoText as $text => $emoji){?>
-                                                <option value="<?= $text ?>"
-                                                <?= $text === $tasklist['TaskType'] ? " selected" : "" ?>
-                                                title="<?= $emoDescription[$text] ?>" ><?= "$emoji $emoDescription[$text]" ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </td>
-                                    <td><input type="text" name="title" value="<?= $tasklist['Title'] ?>"></td>
-                                    <td><input type="text" name="description" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
-                                    <td><input type="text" name="durate" size="3" value="<?= $tasklist['Durate'] ?>"></td>
-                                    <td><input type="text" name="maintainer" value="<?= isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "" ?>"></td>
-                                    <td><input type="submit" name="submit" value="Save"></td>
-                                    </tr>
-                                    </form>
-                                <?php endwhile; ?>
-                                <form method="post" action="add.php">
-                                    <tr>
-                                    <td><select required name="tasktype">
-                                        <option></option>
-                                        <?php foreach($emoText as $text => $emoji){
-                                            ?><option value="<?= $text ?>"><?= "$emoji $emoDescription[$text]" ?></option>
+                            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)):
+
+                                ?><form method="post" action="add.php">
+                                <tr>
+                                <input type="hidden" name="idn" value="<?= $tasklist['ID'] ?>">
+
+                                <td>
+                                    <select required name="tasktype">
+                                        <?php foreach($emoText as $text => $emoji){?>
+                                            <option value="<?= $text ?>"
+                                            <?= $text === $tasklist['TaskType'] ? " selected" : "" ?>
+                                            title="<?= $emoDescription[$text] ?>" ><?= "$emoji $emoDescription[$text]" ?></option>
                                         <?php } ?>
-                                        
-                                    </select></td>
-                                    <td><input type="text" name="title"></td>
-                                    <td><input type="text" name="description"></td>
-                                    <td><input type="text" name="durate" size="3"></td>
-                                    <td><input type="text" name="maintainer"></td>
-                                    <td><input type="submit" name="submit" value="Add"></td>
-                                    </tr>
-                                    </form>
+                                    </select>
+                                </td>
+                                <td><input type="text" name="title" value="<?= $tasklist['Title'] ?>"></td>
+                                <td><input type="text" name="description" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
+                                <td><input type="text" name="durate" size="3" value="<?= $tasklist['Durate'] ?>"></td>
+                                <td><input type="text" name="maintainer" value="<?= isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "" ?>"></td>
+                                <td><input type="submit" name="submit" value="Save"></td>
+                                </tr>
+                                </form>
+                            <?php endwhile; ?>
+                            <form method="post" action="add.php">
+                                <tr>
+                                <td><select required name="tasktype">
+                                    <option></option>
+                                    <?php foreach($emoText as $text => $emoji){
+                                        ?><option value="<?= $text ?>"><?= "$emoji $emoDescription[$text]" ?></option>
+                                    <?php } ?>
+
+                                </select></td>
+                                <td><input type="text" name="title"></td>
+                                <td><input type="text" name="description"></td>
+                                <td><input type="text" name="durate" size="3"></td>
+                                <td><input type="text" name="maintainer"></td>
+                                <td><input type="submit" name="submit" value="Add"></td>
+                                </tr>
+                                </form>
                         </tbody>                 
                     </table> 
                 </div>  
