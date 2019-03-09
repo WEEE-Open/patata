@@ -12,3 +12,5 @@ Information display system that shows a to-do list, date and time, random quotes
 sqlite3 ../patabase.db < createDB.sql 
 sqlite3 ../patabase.db < populate.sql
 ```
+
+Then copy `quotes-example.json` to `quotes.json`
