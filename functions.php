@@ -101,7 +101,7 @@ function handle_post() {
         } elseif($edit === "Add") {
             add_new_task($db, $title, $description, $durate, $type, $maintainer);
         }elseif($edit === "Done"){
-            $date = $_POST['date'];
+            $date = date("Y-m-d H:i:s");
             update_task($db, $title, $description, $durate, $type, $idn, $maintainer, true, $date);
         }
     }

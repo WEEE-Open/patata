@@ -67,7 +67,6 @@ include 'functions.php';
                                 <td><input type="text" name="description" value="<?= isset($tasklist['Description']) ? $tasklist['Description']: "" ?>"></td>
                                 <td><input type="text" name="durate" size="3" value="<?= $tasklist['Durate'] ?>"></td>
                                 <td><input type="text" name="maintainer" value="<?= isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "" ?>"></td>
-                                <td><input type="hidden" name="date" value="<?= date("Y-m-d H:i:s") ?>"></td>
                                 <td><input type="submit" name="submit" value="Save"></td>
                                 <td><input type="submit" name="submit" value="Done"></td>
                                 </tr>
