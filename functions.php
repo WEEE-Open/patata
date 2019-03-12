@@ -97,16 +97,20 @@ function handle_post() {
         unset($temp_maintainer);
         $edit = $_POST['submit'];
         if($edit === "Save") {
-            update_task($db, $title, $description, $durate, $type, $idn, $maintainer);
+            update_task($db, $title, $description, $durate, $type, $idn, $maintainer, false, NULL);
         } elseif($edit === "Add") {
             add_new_task($db, $title, $description, $durate, $type, $maintainer);
+        }elseif($edit === "Done"){
+            $date = $_POST['date'];
+            update_task($db, $title, $description, $durate, $type, $idn, $maintainer, true, $date);
         }
     }
 }
 
-function update_task(MyDB $db, $title, $description, int $durate, $type, int $idn, array $maintainer) {
+function update_task(MyDB $db, $title, $description, int $durate, $type, int $idn, array $maintainer, bool $done, $date) {
     $stmt = $db->prepare('UPDATE "Task" 
-                                    SET "Title" = :title, "Description" = :descr, "Durate" = :durate, "TaskType" = :tasktype
+                                    SET "Title" = :title, "Description" = :descr, "Durate" = :durate,
+                                         "TaskType" = :tasktype, "Done" = :done, "Date" = :compDate
                                     WHERE "ID" = :id');
     if($stmt === false) {
         throw new RuntimeException('Cannot prepare statement');
@@ -116,6 +120,8 @@ function update_task(MyDB $db, $title, $description, int $durate, $type, int $id
     $stmt->bindValue(':descr', $description);
     $stmt->bindValue(':durate', $durate);
     $stmt->bindValue(':tasktype', $type);
+    $stmt->bindValue(':done', $done);
+    $stmt->bindValue(':compDate', $date);
     $stmt->bindValue(':id', $idn);
     $stmt->execute();
 

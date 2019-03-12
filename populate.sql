@@ -1,7 +1,7 @@
 INSERT INTO Task (Title,Description,TaskType,Durate)
 VALUES ('test','asd','C',16);
-INSERT INTO Task (Title,TaskType,Done,Durate)
-VALUES ('scrivere o''cane è bello','I',1,12);
+INSERT INTO Task (Title,TaskType,Done,Durate,Date)
+VALUES ('scrivere o''cane è bello','I',1,12,'2019-03-10 17:16:18');
 INSERT INTO Task (Title,Description,TaskType,Durate)
 VALUES ('robe','lel','S',1);
 INSERT INTO Task (Title,TaskType,Durate)
