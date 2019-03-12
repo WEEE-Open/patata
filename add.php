@@ -240,36 +240,6 @@ include 'functions.php';
 
                 display_c();
             }
-
-            <?php
-                $quotesin = file_get_contents("quotes.json");
-                $obj2 = json_decode("$quotesin", TRUE);
-                $num_quotes = count($obj2) - 1;
-                $quote_refresh = 5; // In seconds
-            
-            //display_q() Refresh time function for the quotes
-            //display_qt() Quote string generator
-                echo "
-                function display_q(){                                      
-                    var refresh=1000*$quote_refresh;
-                    mytime=setTimeout('display_qt()',refresh)
-                }
-
-                function display_qt() {
-
-                    var quotes_array = $quotesin
-                    var val = Math.floor(Math.random() * $num_quotes)
-                    document.getElementById('quotesbox').innerHTML = quotes_array[val].quote
-                    document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author
-                    if(typeof quotes_array[val].context !== 'undefined'){
-                        document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author + \" \" + quotes_array[val].context
-                    }
-                    else{
-                    document.getElementById('authorbox').innerHTML = \"Cit. \" + quotes_array[val].author
-                    }
-                    display_q();
-                }";
-            ?>
         </script>
     </body>
 </html>
