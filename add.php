@@ -2,6 +2,8 @@
 <?php
 include 'db.php';
 include 'functions.php';
+
+$done = isset($_GET['done']) && $_GET['done'] === 'true';
 ?>
 <html>
     <head>
@@ -20,17 +22,11 @@ include 'functions.php';
                     <div id='ct2'></div>
                 </div>
                 <div class="col-md-6">
-                    <form method="post" action="add.php">
-                    <? if(empty($_POST['done']) OR $_POST['done']===true){ 
-                            $done = false;
-                            $text = "Show completed task";                  
-                        }else{ 
-                            $done = true;
-                            $text = "Show task diocane";
-                        } ?>
-                        <input type="hidden" name="done" value="<?= $done ?>">
-                        <button type="submit"><?= $text ?></td>
-                    </form>
+	                <?php if($done): ?>
+                        <a class="float-right" href="?done=false">View tasks to do</a>
+	                <?php else: ?>
+		                <a class="float-right" href="?done=true">View completed tasks</a>
+	                <?php endif ?>
                 </div>
             </div>
 
@@ -78,7 +74,11 @@ include 'functions.php';
                                 <td><input type="text" name="durate" size="3" value="<?= $tasklist['Durate'] ?>"></td>
                                 <td><input type="text" name="maintainer" value="<?= isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "" ?>"></td>
                                 <td><input type="submit" name="submit" value="Save"></td>
-                                <td><input type="submit" name="submit" value="Done"></td>
+                                <?php if($done): ?>
+                                    <td><input type="submit" name="submit" value="Undo"></td>
+                                <?php else: ?>
+                                    <td><input type="submit" name="submit" value="Done"></td>
+                                <?php endif ?>
                                 </tr>
                                 </form>
                             <?php endwhile; ?>

@@ -106,9 +106,11 @@ function handle_post() {
             update_task($db, $title, $description, $durate, $type, $idn, $maintainer, false, NULL);
         } elseif($edit === "Add") {
             add_new_task($db, $title, $description, $durate, $type, $maintainer);
-        }elseif($edit === "Done"){
+        } elseif($edit === "Done") {
             $date = date("Y-m-d H:i:s");
             update_task($db, $title, $description, $durate, $type, $idn, $maintainer, true, $date);
+        } elseif($edit === "Undo") {
+            update_task($db, $title, $description, $durate, $type, $idn, $maintainer, false, NULL);
         }
     }
 }
