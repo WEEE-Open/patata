@@ -81,6 +81,11 @@ function handle_post() {
     $db = new MyDB();
 
     if (isset($_POST['title'])) {
+        if(empty($_POST['title'])) {
+            $idn = (int) $_POST['idn'];
+            delete_task($db, $idn);
+            return;
+        }
         $title = $_POST['title'];
         if(empty($_POST['idn'])) {
             $idn = null;
@@ -153,9 +158,15 @@ function add_new_task(MyDB $db, $title, $description, int $durate, $type, array 
 }
 
 
-function add_maintainers(MyDB $db, array $maintainer, $idn) {
+function add_maintainers(MyDB $db, array $maintainer, int $idn) {
     foreach($maintainer as $temp_maintainer) {
         $db->query("INSERT INTO T_Maintainer (T_ID,Maintainer)
                         VALUES ('$idn', '$temp_maintainer')");
     }
+}
+
+
+function delete_task(MyDB $db, int $idn) {
+    $db->query("DELETE FROM Task 
+                WHERE ID = $idn");
 }
