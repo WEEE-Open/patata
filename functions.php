@@ -25,7 +25,7 @@ function print_tasktable() {
                 <tbody>
                     <?php
                     $db = new MyDB();
-                    list($result, $maintainer) = get_tasks_and_maintainers($db);
+                    list($result, $maintainer) = get_tasks_and_maintainers($db, false);
 
                     $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
                     $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
@@ -56,7 +56,8 @@ function print_tasktable() {
  * @param $done bool True if you only want completed tasks, false if you only want tasks that are still to do (default)
  * @return array $result, $maintainer
  */
-function get_tasks_and_maintainers(MyDB $db, bool $done = false): array {
+function get_tasks_and_maintainers(MyDB $db, bool $done): array {
+    
     $done = (int) $done;
     $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done
                                             FROM TASK 

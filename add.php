@@ -20,8 +20,17 @@ include 'functions.php';
                     <div id='ct2'></div>
                 </div>
                 <div class="col-md-6">
-                    <div align=right id='quotesbox'></div>
-                    <div align=right id='authorbox'></div>
+                    <form method="post" action="add.php">
+                    <? if(empty($_POST['done']) OR $_POST['done']===true){ 
+                            $done = false;
+                            $text = "Show completed task";                  
+                        }else{ 
+                            $done = true;
+                            $text = "Show task diocane";
+                        } ?>
+                        <input type="hidden" name="done" value="<?= $done ?>">
+                        <button type="submit"><?= $text ?></td>
+                    </form>
                 </div>
             </div>
 
@@ -43,7 +52,8 @@ include 'functions.php';
                         <tbody>
                             <?php
                             $db = new MyDB();
-                            list($result, $maintainer) = get_tasks_and_maintainers($db);
+
+                            list($result, $maintainer) = get_tasks_and_maintainers($db, $done);
 
                             $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
                             $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
