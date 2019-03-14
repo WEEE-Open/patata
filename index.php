@@ -40,8 +40,8 @@ if(isset($_GET['quote'])) {
                     <div id='ct2'></div>
                 </div>
                 <div class="col-md-6">
-                    <div align=right id='quotesbox'></div>
-                    <div align=right id='authorbox'></div>
+                    <div id='quotesbox' class="text-right"></div>
+                    <div id='authorbox' class="text-right"></div>
                 </div>
 	            <script>
                     /**
@@ -70,7 +70,7 @@ if(isset($_GET['quote'])) {
 	            </script>
             </div>
 
-            <hr/>
+            <hr>
 
             <?php print_tasktable() ?>
 
@@ -80,120 +80,117 @@ if(isset($_GET['quote'])) {
                 setInterval(function () {
                     $tasktable.load("index.php?tasks #tasktable");
                 }, 3 * 1000);
-            </script> 
-            <hr/>                          
+            </script>
+
+            <hr>
 
             <div class="row">
                 <div class="col-md-6">
-                    <div class="statswrapper">
-                        <h6 class="text-center">Recently added items</h6>
-                        <table class="table table-striped table-sm text-center">
-                            <thead>
-                                <tr>
-                                    <td>Item</td>
-                                    <td>Added</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><a href="/item/R374">R374</a></td>
-                                    <td>2018-10-18, 20:01</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/R373">R373</a></td>
-                                    <td>2018-10-18, 20:01</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/C165">C165</a></td>
-                                    <td>2018-10-18, 20:01</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/B152">B152</a></td>
-                                    <td>2018-10-18, 20:01</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/R372">R372</a></td>
-                                    <td>2018-10-18, 13:20</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/R371">R371</a></td>
-                                    <td>2018-10-18, 13:20</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/127">127</a></td>
-                                    <td>2018-10-16, 19:37</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/126">126</a></td>
-                                    <td>2018-10-16, 19:16</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/HDD228">HDD228</a></td>
-                                    <td>2018-10-16, 19:07</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/HDD227">HDD227</a></td>
-                                    <td>2018-10-16, 19:04</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <h6 class="text-center">Recently added items</h6>
+                    <table class="table table-striped table-sm text-center">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Added</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a href="/item/R374">R374</a></td>
+                                <td>2018-10-18, 20:01</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/R373">R373</a></td>
+                                <td>2018-10-18, 20:01</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/C165">C165</a></td>
+                                <td>2018-10-18, 20:01</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/B152">B152</a></td>
+                                <td>2018-10-18, 20:01</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/R372">R372</a></td>
+                                <td>2018-10-18, 13:20</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/R371">R371</a></td>
+                                <td>2018-10-18, 13:20</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/127">127</a></td>
+                                <td>2018-10-16, 19:37</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/126">126</a></td>
+                                <td>2018-10-16, 19:16</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/HDD228">HDD228</a></td>
+                                <td>2018-10-16, 19:07</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/HDD227">HDD227</a></td>
+                                <td>2018-10-16, 19:04</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="col-md-6">
-                    <div class="statswrapper">
-                        <h6 class="text-center">Recently modified items</h6>
-                        <table class="table table-striped table-sm text-center">
-                            <thead>
-                                <tr>
-                                    <td>Item</td>
-                                    <td>Modified</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><a href="/item/R374">R374</a></td>
-                                    <td>2018-10-18, 20:01</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/R373">R373</a></td>
-                                    <td>2018-10-18, 20:01</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/C165">C165</a></td>
-                                    <td>2018-10-18, 20:01</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/B152">B152</a></td>
-                                    <td>2018-10-18, 20:01</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/R372">R372</a></td>
-                                    <td>2018-10-18, 13:20</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/R371">R371</a></td>
-                                    <td>2018-10-18, 13:20</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/127">127</a></td>
-                                    <td>2018-10-16, 19:37</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/126">126</a></td>
-                                    <td>2018-10-16, 19:16</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/HDD228">HDD228</a></td>
-                                    <td>2018-10-16, 19:07</td>
-                                </tr>
-                                <tr>
-                                    <td><a href="/item/HDD227">HDD227</a></td>
-                                    <td>2018-10-16, 19:04</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    <div>
+	                <h6 class="text-center">Recently modified items</h6>
+                    <table class="table table-striped table-sm text-center">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Modified</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a href="/item/R374">R374</a></td>
+                                <td>2018-10-18, 20:01</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/R373">R373</a></td>
+                                <td>2018-10-18, 20:01</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/C165">C165</a></td>
+                                <td>2018-10-18, 20:01</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/B152">B152</a></td>
+                                <td>2018-10-18, 20:01</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/R372">R372</a></td>
+                                <td>2018-10-18, 13:20</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/R371">R371</a></td>
+                                <td>2018-10-18, 13:20</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/127">127</a></td>
+                                <td>2018-10-16, 19:37</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/126">126</a></td>
+                                <td>2018-10-16, 19:16</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/HDD228">HDD228</a></td>
+                                <td>2018-10-16, 19:07</td>
+                            </tr>
+                            <tr>
+                                <td><a href="/item/HDD227">HDD227</a></td>
+                                <td>2018-10-16, 19:04</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

@@ -10,43 +10,41 @@ function get_random_quote() {
 function print_tasktable() {
     ?>
     <div id='tasktable'>
-        <div class="task">
-            <h5 class="text-center">Tasklist</h5>
-            <table class="table table-striped " style="width: 70%; margin: 0 auto;">
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Durate (Minutes)</th>
-                        <th>Maintainer</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $db = new MyDB();
-                    list($result, $maintainer) = get_tasks_and_maintainers($db, false);
+        <h5 class="text-center">Tasklist</h5>
+        <table class="table table-striped" style="margin: 0 auto;">
+            <thead>
+                <tr>
+                    <th class="col-1">Type</th>
+                    <th class="col-5">Title</th>
+                    <th class="col-3">Description</th>
+                    <th class="col-1">Durate (Minutes)</th>
+                    <th class="col-2">Maintainer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $db = new MyDB();
+                list($result, $maintainer) = get_tasks_and_maintainers($db, false);
 
-                    $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
-                    $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
+                $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
+                $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
 
-                    while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
-                        echo "<tr>";
-                        echo "<td title=\"${emoDescription[$tasklist['TaskType']]}\">".$emoText[$tasklist['TaskType']]."</td>";
-                        echo "<td>".$tasklist['Title']."</td>";
-                        echo "<td>";
-                        echo isset($tasklist['Description']) ? $tasklist['Description']: "";
-                        echo "</td>";
-                        echo "<td>".$tasklist['Durate']."</td>";
-                        echo "<td>";
-                        echo isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "";
-                        echo "</td>";
-                        echo "</tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
+                while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
+                    echo "<tr>";
+                    echo "<td title=\"${emoDescription[$tasklist['TaskType']]}\">".$emoText[$tasklist['TaskType']]."</td>";
+                    echo "<td>".$tasklist['Title']."</td>";
+                    echo "<td>";
+                    echo isset($tasklist['Description']) ? $tasklist['Description']: "";
+                    echo "</td>";
+                    echo "<td>".$tasklist['Durate']."</td>";
+                    echo "<td>";
+                    echo isset($maintainer[$tasklist['ID']]) ? implode(', ',$maintainer[$tasklist['ID']]) : "";
+                    echo "</td>";
+                    echo "</tr>";
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
     <?php
 }
