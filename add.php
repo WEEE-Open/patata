@@ -14,12 +14,12 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
     </head>
     <body onload="display_ct()">
         <div class="container">
-            <h1>Patata</h1>
+            <h1 style="padding-left: 30px;">Patata</h1>
 
             <div class="row">
                 <div class="col-md-6">      
-                    <div id='ct'></div>
-                    <div id='ct2'></div>
+                    <div id='ct' style="padding-left: 30px;"></div>
+                    <div id='ct2' style="padding-left: 30px;"></div>
                 </div>
                 <div class="col-md-6">
 	                <?php if($done): ?>
@@ -30,7 +30,7 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                 </div>
             </div>
 
-            <hr/>
+            <hr style="padding-left: 0 px;margin-left: 30px;">
 	        <?php handle_post(); ?>
             <div id='tasktable'>
                 <div class="task">
@@ -43,6 +43,8 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                                 <th>Description</th>
                                 <th>Durate (Minutes)</th>
                                 <th>Maintainer</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,7 +84,7 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                                 </tr>
                                 </form>
                             <?php endwhile; ?>
-                            <form method="post" action="add.php">
+                           <form method="post" action="add.php">
                                 <tr>
                                 <td><select required name="tasktype">
                                     <option></option>
@@ -96,13 +98,13 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                                 <td><input type="text" name="durate" size="3"></td>
                                 <td><input type="text" name="maintainer"></td>
                                 <td><input type="submit" name="submit" value="Add"></td>
+                                <td></td>
                                 </tr>
                                 </form>
                         </tbody>                 
                     </table> 
                 </div>  
-            </div>
-            <hr/>                          
+            </div>                          
 
         <script type="text/javascript">
             function display_c(){       //Refresh time for the date function
