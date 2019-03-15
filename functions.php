@@ -88,7 +88,10 @@ function get_tasks_and_maintainers(MyDB $db, bool $done): array {
                                             LIMIT $row_count OFFSET $offset");
     $result2 = $db->query("SELECT T_ID, Maintainer
                                             FROM T_MAINTAINER
-                                            WHERE T_ID >= ($offset) AND T_ID <= ($offset + $row_count)
+                                            WHERE T_ID IN (SELECT ID
+                                                            FROM TASK 
+                                                            WHERE Done = $done
+                                                            LIMIT $row_count OFFSET $offset)
                                             ORDER BY T_ID");
     $maintainer = array();
     while($temp = $result2->fetchArray(SQLITE3_ASSOC)) {
