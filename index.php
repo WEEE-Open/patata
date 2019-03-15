@@ -1,14 +1,8 @@
 <?php
 include 'db.php';
 include 'functions.php';
+session_start();
 
-isset($_SESSION['max_row']) ? : $_SESSION['max_row'] = get_max_id();
-
-if(isset($_SESSION['count']) AND ($_SESSION['count'] <= $_SESSION['max_row'])){
-    $_SESSION['count']+=5;
-}else{
-    $_SESSION['count'] = 0;
-}
 if(isset($_GET['quote'])) {
     $quote = get_random_quote();
     header('Content-Type', 'application/json');
@@ -85,7 +79,7 @@ if(isset($_GET['quote'])) {
                 let $tasktable = $("#tasktable");
                 setInterval(function () {
                     $tasktable.load("index.php?tasks #tasktable");
-                }, 3 * 1000);
+                }, 10 * 1000);
             </script>
 
             <hr>

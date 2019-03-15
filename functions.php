@@ -14,7 +14,15 @@ function get_max_id(){
     return $temp['ID'];
 }
 
+function get_number_to_do(){
+    $db = new MyDB();
+    $temp = $db->query("SELECT COUNT (ID) ID FROM TASK WHERE DONE = 0");
+    $temp = $temp->fetchArray(SQLITE3_ASSOC);
+    return $temp['ID'];
+}
+
 function print_tasktable() {
+    $_SESSION['max_row'] = get_number_to_do();
     ?>
     <div id='tasktable'>
         <h5 class="text-center">Tasklist</h5>
@@ -64,8 +72,15 @@ function print_tasktable() {
 function get_tasks_and_maintainers(MyDB $db, bool $done): array {
     
     $done = (int) $done;
-    isset($_SESSION['count']) ? $row_count = 5 : $row_count = get_max_id();
-    $offset = (int) $_SESSION['count'];
+    isset($_SESSION['count']) ? $row_count = 5 : $row_count = get_number_to_do();
+    $offset = 0 + (int) $_SESSION['count'];
+    if($offset <= $_SESSION['max_row']){
+        $_SESSION['count']+=5;
+    }else{
+        $offset = 0;
+        $_SESSION['count'] = 0;
+    }
+
     $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done
                                             FROM TASK 
                                             WHERE Done = $done
@@ -94,7 +109,7 @@ function handle_post() {
         if(empty($_POST['title'])) {
             $idn = (int) $_POST['idn'];
             delete_task($db, $idn);
-            $_SESSION['max_row'] = get_max_id();
+            $_SESSION['max_row'] = get_number_to_do();
             return;
         }
         $title = $_POST['title'];
@@ -163,9 +178,9 @@ function add_new_task(MyDB $db, $title, $description, int $durate, $type, array 
 
     $stmt->execute();
 
-    $_SESSION['max_row'] = get_max_id();
+    $idn = get_max_id();
 
-    add_maintainers($db, $maintainer, $_SESSION['max_row']);
+    add_maintainers($db, $maintainer, $idn);
 }
 
 
