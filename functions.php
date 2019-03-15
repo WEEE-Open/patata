@@ -7,6 +7,13 @@ function get_random_quote() {
     return $quotes[$quote_id];
 }
 
+function get_max_id(){
+    $db = new MyDB();
+    $temp = $db->query("SELECT MAX(ID) ID FROM TASK");
+    $temp = $temp->fetchArray(SQLITE3_ASSOC);
+    return $temp['ID'];
+}
+
 function print_tasktable() {
     ?>
     <div id='tasktable'>
@@ -57,13 +64,18 @@ function print_tasktable() {
 function get_tasks_and_maintainers(MyDB $db, bool $done): array {
     
     $done = (int) $done;
+    isset($_SESSION['count']) ? $row_count = 5 : $row_count = $_SESSION['max_row'];
+    $offset = 0 + (int) $_SESSION['cout'];
+    if($offset<)
     $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done
                                             FROM TASK 
                                             WHERE Done = $done
-                                            ORDER BY ID");
-    $result2 = $db->query('SELECT T_ID, Maintainer
+                                            ORDER BY ID
+                                            LIMIT $row_count OFFSET $offset");
+    $result2 = $db->query("SELECT T_ID, Maintainer
                                             FROM T_MAINTAINER
-                                            ORDER BY T_ID');
+                                            WHERE T_ID >= ($offset) AND T_ID <= ($offset + $row_count)
+                                            ORDER BY T_ID");
     $maintainer = array();
     while($temp = $result2->fetchArray(SQLITE3_ASSOC)) {
         $maintainer[$temp['T_ID']] = array();
@@ -151,9 +163,7 @@ function add_new_task(MyDB $db, $title, $description, int $durate, $type, array 
 
     $stmt->execute();
 
-    $temp = $db->query("SELECT MAX(ID) ID FROM TASK");
-    $temp = $temp->fetchArray(SQLITE3_ASSOC);
-    $idn = $temp['ID'];
+    $idn = get_max_id();
 
     add_maintainers($db, $maintainer, $idn);
 }
