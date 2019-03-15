@@ -1,8 +1,14 @@
 <?php
 include 'db.php';
 include 'functions.php';
-$_SESSION['max_row'] = get_max_id();
-if(isset($_SESSION['count']))
+
+isset($_SESSION['max_row']) ? : $_SESSION['max_row'] = get_max_id();
+
+if(isset($_SESSION['count']) AND ($_SESSION['count'] <= $_SESSION['max_row'])){
+    $_SESSION['count']+=5;
+}else{
+    $_SESSION['count'] = 0;
+}
 if(isset($_GET['quote'])) {
     $quote = get_random_quote();
     header('Content-Type', 'application/json');
@@ -30,7 +36,6 @@ if(isset($_GET['quote'])) {
         <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
         <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     </head>
-    <?php $_SESSION['count'] = 5 ?>
     <body onload="display_ct(), auto_update_qt()">
         <div class="container">
             <h1>Patata</h1>

@@ -64,9 +64,8 @@ function print_tasktable() {
 function get_tasks_and_maintainers(MyDB $db, bool $done): array {
     
     $done = (int) $done;
-    isset($_SESSION['count']) ? $row_count = 5 : $row_count = $_SESSION['max_row'];
-    $offset = 0 + (int) $_SESSION['cout'];
-    if($offset<)
+    isset($_SESSION['count']) ? $row_count = 5 : $row_count = get_max_id();
+    $offset = (int) $_SESSION['count'];
     $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done
                                             FROM TASK 
                                             WHERE Done = $done
@@ -95,6 +94,7 @@ function handle_post() {
         if(empty($_POST['title'])) {
             $idn = (int) $_POST['idn'];
             delete_task($db, $idn);
+            $_SESSION['max_row'] = get_max_id();
             return;
         }
         $title = $_POST['title'];
@@ -163,9 +163,9 @@ function add_new_task(MyDB $db, $title, $description, int $durate, $type, array 
 
     $stmt->execute();
 
-    $idn = get_max_id();
+    $_SESSION['max_row'] = get_max_id();
 
-    add_maintainers($db, $maintainer, $idn);
+    add_maintainers($db, $maintainer, $_SESSION['max_row']);
 }
 
 
