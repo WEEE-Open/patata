@@ -1,4 +1,6 @@
 <?php
+const TYPE_EMOJI = ["C"=>"🍀", "E"=>"⚡️", "I"=>"💻", "S"=>"🎮"];
+const TYPE_DESCRIPTION = ["C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago"];
 
 function get_random_quote() {
     $quotes_file = file_get_contents("quotes.json");
@@ -42,7 +44,10 @@ function print_tasktable() {
                 list($result, $maintainer) = get_tasks_and_maintainers($db, false);
 
                 while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
-                    list($emoji, $taskName) = type_to_emoji($tasklist['TaskType']);
+
+                    $emoji = TYPE_EMOJI[$tasklist['TaskType']];
+                    $taskName = TYPE_DESCRIPTION[$tasklist['TaskType']];
+
                     echo "<tr>";
                     echo "<td title=\"$taskName\">".$emoji."</td>";
                     echo "<td>".$tasklist['Title']."</td>";
@@ -193,27 +198,4 @@ function add_maintainers(MyDB $db, array $maintainer, int $idn) {
 function delete_task(MyDB $db, int $idn) {
     $db->query("DELETE FROM Task 
                 WHERE ID = $idn");
-}
-//Remember to edit also $emoText in add.php
-//if you modify type_to_emoji()
-function type_to_emoji($type): array {
-    switch($type){
-        case "C":
-            $emoji = "🍀";
-            $taskName = "Cose";
-            break;
-        case "E":
-            $emoji = "⚡";
-            $taskName = "Elettronica";
-            break;
-        case "I":
-            $emoji = "💻";
-            $taskName = "Informatica";
-            break;
-        case "S":
-            $emoji = "🎮";
-            $taskName = "Svago";
-            break;
-    }
-    return array($emoji, $taskName);
 }
