@@ -41,12 +41,10 @@ function print_tasktable() {
                 $db = new MyDB();
                 list($result, $maintainer) = get_tasks_and_maintainers($db, false);
 
-                $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
-                $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
-
                 while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)){
+                    list($emoji, $taskName) = type_to_emoji($tasklist['TaskType']);
                     echo "<tr>";
-                    echo "<td title=\"${emoDescription[$tasklist['TaskType']]}\">".$emoText[$tasklist['TaskType']]."</td>";
+                    echo "<td title=\"$taskName\">".$emoji."</td>";
                     echo "<td>".$tasklist['Title']."</td>";
                     echo "<td>";
                     echo isset($tasklist['Description']) ? $tasklist['Description']: "";
@@ -166,7 +164,6 @@ function update_task(MyDB $db, $title, $description, int $durate, $type, int $id
     add_maintainers($db, $maintainer, $idn);
 }
 
-
 function add_new_task(MyDB $db, $title, $description, int $durate, $type, array $maintainer) {
     $stmt = $db->prepare("INSERT INTO Task (Title,Description,Durate,TaskType)
                         VALUES (:title, :descr, :durate, :type)");
@@ -186,7 +183,6 @@ function add_new_task(MyDB $db, $title, $description, int $durate, $type, array 
     add_maintainers($db, $maintainer, $idn);
 }
 
-
 function add_maintainers(MyDB $db, array $maintainer, int $idn) {
     foreach($maintainer as $temp_maintainer) {
         $db->query("INSERT INTO T_Maintainer (T_ID,Maintainer)
@@ -194,8 +190,30 @@ function add_maintainers(MyDB $db, array $maintainer, int $idn) {
     }
 }
 
-
 function delete_task(MyDB $db, int $idn) {
     $db->query("DELETE FROM Task 
                 WHERE ID = $idn");
+}
+//Remember to edit also $emoText in add.php
+//if you modify type_to_emoji()
+function type_to_emoji($type): array {
+    switch($type){
+        case "C":
+            $emoji = "🍀";
+            $taskName = "Cose";
+            break;
+        case "E":
+            $emoji = "⚡";
+            $taskName = "Elettronica";
+            break;
+        case "I":
+            $emoji = "💻";
+            $taskName = "Informatica";
+            break;
+        case "S":
+            $emoji = "🎮";
+            $taskName = "Svago";
+            break;
+    }
+    return array($emoji, $taskName);
 }

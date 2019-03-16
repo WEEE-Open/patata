@@ -52,9 +52,10 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                             $db = new MyDB();
 
                             list($result, $maintainer) = get_tasks_and_maintainers($db, $done);
-
+                            
+                            //Remember to edit also type_to_emoji() in function.php
+                            //if you modify $emoText
                             $emoText = array("C"=>"🍀", "E"=>"⚡", "I"=>"💻", "S"=>"🎮");
-                            $emoDescription = array("C"=>"Cose", "E"=>"Elettronica", "I"=>"Informatica", "S"=>"Svago");
 
                             while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)):
 
@@ -66,8 +67,9 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                                     <select required name="tasktype">
                                         <?php foreach($emoText as $text => $emoji){?>
                                             <option value="<?= $text ?>"
-                                            <?= $text === $tasklist['TaskType'] ? " selected" : "" ?>
-                                            title="<?= $emoDescription[$text] ?>" ><?= "$emoji $emoDescription[$text]" ?></option>
+                                            <?= $text === $tasklist['TaskType'] ? " selected" : ""; 
+                                            list(, $taskName) = type_to_emoji($text)?>
+                                            title="<?= $taskName ?>" ><?= "$emoji $taskName" ?></option>
                                         <?php } ?>
                                     </select>
                                 </td>
@@ -89,7 +91,8 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                                 <td><select required name="tasktype">
                                     <option></option>
                                     <?php foreach($emoText as $text => $emoji){
-                                        ?><option value="<?= $text ?>"><?= "$emoji $emoDescription[$text]" ?></option>
+                                        list(, $taskName) = type_to_emoji($text)?>
+                                        ?><option value="<?= $taskName ?>"><?= "$emoji $taskName" ?></option>
                                     <?php } ?>
 
                                 </select></td>
