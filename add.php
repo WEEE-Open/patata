@@ -82,16 +82,17 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                                 </tr>
                                 </form>
                             <?php endwhile; ?>
-                           <form method="post" action="add.php">
+                            <form method="post" action="add.php">
                                 <tr>
-                                <td><select required name="tasktype">
-                                    <option></option>
+                                <td>
+                                    <select required name="tasktype">
+                                    <option><?php echo $_POST['typeErr']?></option>
                                     <?php foreach(TYPE_EMOJI as $text => $emoji){
                                         $taskName = TYPE_DESCRIPTION[$text] ?>
-                                        ?><option value="<?= $taskName ?>"><?= "$emoji $taskName" ?></option>
+                                        ?><option value="<?= $text ?>"><?= "$emoji $taskName" ?></option>
                                     <?php } ?>
-
-                                </select></td>
+                                    </select>
+                                </span></td>
                                 <td><input type="text" name="title"></td>
                                 <td><input type="text" name="description"></td>
                                 <td><input type="text" name="durate" size="3"></td>
@@ -99,7 +100,7 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                                 <td><input type="submit" name="submit" value="Add"></td>
                                 <td></td>
                                 </tr>
-                                </form>
+                            </form>
                         </tbody>                 
                     </table> 
                 </div>  

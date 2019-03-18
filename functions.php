@@ -118,18 +118,25 @@ function handle_post() {
             $_SESSION['max_row'] = get_number_to_do();
             return;
         }
-        $title = $_POST['title'];
+        $title = test_input($_POST['title']);
         if(empty($_POST['idn'])) {
             $idn = null;
         } else {
             $idn = (int) $_POST['idn'];
         }
-        $type = $_POST['tasktype'];
-        $description = $_POST['description'];
+        foreach(TYPE_EMOJI as $tempType => $tempEmoji){
+            if($tempType == $_POST['tasktype']){         
+                $type = $_POST['tasktype'];
+            }
+        }
+        if(!isset($type)){
+            $_POST['typeErr'] = "Select a valid task type";
+        }
+        $description = test_input($_POST['description']);
         $durate = (int) $_POST['durate'];
         $maintainer = explode(',', $_POST['maintainer']);
         foreach($maintainer as &$temp_maintainer) {
-            $temp_maintainer = trim($temp_maintainer);
+            $temp_maintainer = test_input($temp_maintainer);
         }
         unset($temp_maintainer);
         $edit = $_POST['submit'];
@@ -198,4 +205,11 @@ function add_maintainers(MyDB $db, array $maintainer, int $idn) {
 function delete_task(MyDB $db, int $idn) {
     $db->query("DELETE FROM Task 
                 WHERE ID = $idn");
+}
+
+function test_input($input){
+    $input = trim($input);
+    $input = stripslashes($input);
+    $input = htmlspecialchars($input);
+    return $input;
 }
