@@ -36,16 +36,15 @@ exit(0);
 
 <body onload="display_ct(), auto_update_qt()">
     <div class="container">
-        <h1>Patata</h1>
 
         <div class="row">
             <div class="col-md-6">
-                <div id='ct'></div>
-                <div id='ct2'></div>
+                <div id='ct' style="padding-left: 30px;margin-left: 0px;">></div>
+                <div id='ct2' style="padding-left: 30px;"></div>
             </div>
             <div class="col-md-6">
-                <div id='quotesbox' class="text-right"></div>
-                <div id='authorbox' class="text-right"></div>
+                <div id='quotesbox' class="text-right" style="margin-right: 0px;padding-right: 30px;"></div>
+                <div id='authorbox' class="text-right" style="margin-right: 0px;padding-right: 30px;"></div>
             </div>
             <script>
                 /**
@@ -74,7 +73,7 @@ exit(0);
             </script>
         </div>
 
-        <hr>
+        <hr style="margin-left: 30px;margin-right: 30px;">
 
         <?php print_tasktable() ?>
 
