@@ -1,6 +1,24 @@
 <?php
-const TYPE_EMOJI = ["C" => "🍀", "E" => "⚡️", "I" => "💻", "S" => "🎮"];
-const TYPE_DESCRIPTION = ["C" => "Cose", "E" => "Elettronica", "I" => "Informatica", "S" => "Svago"];
+const TYPE_EMOJI = [
+    "E" => "💡",
+    "I" => "💻",
+    "M" => "🔨",
+    "D" => "📘",
+    "C" => "🧽",
+    "V" => "🍀",
+    "R" => "💾",
+    "S" => "🎮",
+];
+const TYPE_DESCRIPTION = [
+    "E" => "Elettronica",
+    "I" => "Informatica",
+    "M" => "Meccanica",
+    "D" => "Documentazione",
+    "C" => "Riordino",
+    "V" => "Eventi",
+    "R" => "Retrocomputing",
+    "S" => "Svago",
+];
 
 function get_random_quote()
 {

@@ -9,8 +9,7 @@ CREATE TABLE TASK (
 	Description TEXT,
 	Durate INT NOT NULL,
     Done BIT DEFAULT 0,
-    Date TEXT,
-    CONSTRAINT CHK_Pri CHECK (TaskType=='I' OR TaskType=='E' OR TaskType=='S' OR TaskType=='C')
+    Date TEXT
 );
 
 CREATE TABLE T_MAINTAINER (
@@ -21,5 +20,3 @@ CREATE TABLE T_MAINTAINER (
         REFERENCES TASK(ID)
         ON UPDATE CASCADE
 );
-
--- 💻 ⚡ 🎮 🍀
