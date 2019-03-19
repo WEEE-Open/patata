@@ -35,11 +35,11 @@ function print_tasktable()
     <table class="table table-striped" style="margin: 0 auto;">
         <thead>
             <tr>
-                <th class="col-1">Type</th>
-                <th class="col-5">Title</th>
-                <th class="col-3">Description</th>
-                <th class="col-1">Durate (Minutes)</th>
-                <th class="col-2">Maintainer</th>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Durate (Minutes)</th>
+                <th>Maintainer</th>
             </tr>
         </thead>
         <tbody>
@@ -91,7 +91,7 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, bool $print_all = false
         } else {
             $total_tasks = get_number_to_do();
             $_SESSION['offset'] += 5;
-            if ($_SESSION['offset'] > $total_tasks) {
+            if ($_SESSION['offset'] >= $total_tasks) {
                 $_SESSION['offset'] = 0;
             }
         }
