@@ -6,7 +6,7 @@ function get_random_quote()
 {
     $quotes_file = file_get_contents("quotes.json");
     $quotes = json_decode($quotes_file, true);
-    $quote_id = (int)floor(rand(0, count($quotes) - 1));
+    $quote_id = rand(0, count($quotes) - 1);
     return $quotes[$quote_id];
 }
 

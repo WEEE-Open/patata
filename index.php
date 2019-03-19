@@ -50,13 +50,12 @@ exit(0);
                 /**
                  * Update quotes every N seconds
                  */
+                let refresh_timer = 1000 * 60 * 30;
                 function auto_update_qt() {
-                    let refresh = 1000 * 5;
-
                     fetch('?quote')
                         .then(response => response.json())
                         .then(json => display_qt(json))
-                        .then(() => setTimeout(auto_update_qt, refresh));
+                        .then(() => setTimeout(auto_update_qt, refresh_timer));
                 }
 
                 /**
