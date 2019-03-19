@@ -8,10 +8,14 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
 <html>
 
 <head>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="patata.svg">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style>
+        * { font-family: 'Noto Sans', sans-serif; }
+    </style>
 </head>
 
 <body onload="display_ct()">

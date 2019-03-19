@@ -29,9 +29,13 @@ exit(0);
 
 <head>
     <link rel="icon" type="image/svg+xml" href="patata.svg">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <style>
+        * { font-family: 'Noto Sans', sans-serif; }
+    </style>
 </head>
 
 <body onload="display_ct(), auto_update_qt()">
@@ -51,6 +55,7 @@ exit(0);
                  * Update quotes every N seconds
                  */
                 let refresh_timer = 1000 * 60 * 30;
+
                 function auto_update_qt() {
                     fetch('?quote')
                         .then(response => response.json())
