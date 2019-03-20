@@ -34,7 +34,9 @@ exit(0);
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <style>
-        * { font-family: 'Noto Sans', sans-serif; }
+        * {
+            font-family: 'Noto Sans', sans-serif;
+        }
     </style>
 </head>
 
@@ -122,26 +124,6 @@ exit(0);
                             <td><a href="/item/R372">R372</a></td>
                             <td>2018-10-18, 13:20</td>
                         </tr>
-                        <tr>
-                            <td><a href="/item/R371">R371</a></td>
-                            <td>2018-10-18, 13:20</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/item/127">127</a></td>
-                            <td>2018-10-16, 19:37</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/item/126">126</a></td>
-                            <td>2018-10-16, 19:16</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/item/HDD228">HDD228</a></td>
-                            <td>2018-10-16, 19:07</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/item/HDD227">HDD227</a></td>
-                            <td>2018-10-16, 19:04</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -175,26 +157,6 @@ exit(0);
                         <tr>
                             <td><a href="/item/R372">R372</a></td>
                             <td>2018-10-18, 13:20</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/item/R371">R371</a></td>
-                            <td>2018-10-18, 13:20</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/item/127">127</a></td>
-                            <td>2018-10-16, 19:37</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/item/126">126</a></td>
-                            <td>2018-10-16, 19:16</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/item/HDD228">HDD228</a></td>
-                            <td>2018-10-16, 19:07</td>
-                        </tr>
-                        <tr>
-                            <td><a href="/item/HDD227">HDD227</a></td>
-                            <td>2018-10-16, 19:04</td>
                         </tr>
                     </tbody>
                 </table>

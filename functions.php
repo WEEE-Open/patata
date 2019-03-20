@@ -53,7 +53,7 @@ function print_tasktable()
         $_SESSION['offset'] = 0;
     }
     list($result, $maintainer) = get_tasks_and_maintainers($db, false, $per_page, $_SESSION['offset']);
-    
+
     $page = 1 + floor(($_SESSION['offset']) / $per_page);
     $pages = ceil($_SESSION['max_row'] / $per_page);
     ?>
@@ -234,10 +234,10 @@ function add_new_task(MyDB $db, $title, $description, int $durate, $type, array 
 function add_maintainers(MyDB $db, array $maintainer, int $idn)
 {
     foreach ($maintainer as $temp_maintainer) {
-        if(!empty($temp_maintainer)){
+        if (!empty($temp_maintainer)) {
             $db->query("INSERT INTO T_Maintainer (T_ID,Maintainer)
                         VALUES ('$idn', '$temp_maintainer')");
-        }       
+        }
     }
 }
 
