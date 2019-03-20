@@ -232,8 +232,10 @@ function add_new_task(MyDB $db, $title, $description, int $durate, $type, array 
 function add_maintainers(MyDB $db, array $maintainer, int $idn)
 {
     foreach ($maintainer as $temp_maintainer) {
-        $db->query("INSERT INTO T_Maintainer (T_ID,Maintainer)
+        if(!empty($temp_maintainer)){
+            $db->query("INSERT INTO T_Maintainer (T_ID,Maintainer)
                         VALUES ('$idn', '$temp_maintainer')");
+        }       
     }
 }
 
