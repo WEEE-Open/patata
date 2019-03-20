@@ -47,9 +47,18 @@ function get_number_to_do()
 function print_tasktable()
 {
     $_SESSION['max_row'] = get_number_to_do();
+    $db = new MyDB();
+    $per_page = 3;
+    if (!isset($_SESSION['offset'])) {
+        $_SESSION['offset'] = 0;
+    }
+    list($result, $maintainer) = get_tasks_and_maintainers($db, false, $per_page, $_SESSION['offset']);
+    
+    $page = 1 + floor(($_SESSION['offset']) / $per_page);
+    $pages = ceil($_SESSION['max_row'] / $per_page);
     ?>
 <div id='tasktable'>
-    <h5 class="text-center">Tasklist</h5>
+    <h5 class="text-center">Tasklist <?= "page $page of $pages" ?></h5>
     <table class="table table-striped" style="margin: 0 auto;">
         <thead>
             <tr>
@@ -62,9 +71,6 @@ function print_tasktable()
         </thead>
         <tbody>
             <?php
-            $db = new MyDB();
-            list($result, $maintainer) = get_tasks_and_maintainers($db, false);
-
             while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) {
 
                 $emoji = TYPE_EMOJI[$tasklist['TaskType']];
@@ -93,27 +99,23 @@ function print_tasktable()
 /**
  * @param MyDB $db The patabase
  * @param $done bool True if you only want completed tasks, false if you only want tasks that are still to do (default)
+ * @param $tasks_per_page int Tasks per page, shows all if less than 0
  * @return array $result, $maintainer
  */
-function get_tasks_and_maintainers(MyDB $db, bool $done, bool $print_all = false): array
+function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5, int &$offset = 0): array
 {
     $done = (int)$done;
 
-    if ($print_all) {
+    if ($tasks_per_page < 0) {
         $row_count = get_number_to_do();
         $offset = 0;
     } else {
-        $row_count = 5;
-        if (!isset($_SESSION['offset'])) {
-            $_SESSION['offset'] = 0;
-        } else {
-            $total_tasks = get_number_to_do();
-            $_SESSION['offset'] += 5;
-            if ($_SESSION['offset'] >= $total_tasks) {
-                $_SESSION['offset'] = 0;
-            }
+        $row_count = $tasks_per_page;
+        $total_tasks = get_number_to_do();
+        $offset += $tasks_per_page;
+        if ($offset >= $total_tasks) {
+            $offset = 0;
         }
-        $offset = $_SESSION['offset'];
     }
 
     $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done

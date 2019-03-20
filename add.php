@@ -81,7 +81,7 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
 
                         $db = new MyDB();
 
-                        list($result, $maintainer) = get_tasks_and_maintainers($db, $done, true);
+                        list($result, $maintainer) = get_tasks_and_maintainers($db, $done, -1);
 
                         while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) :
 
