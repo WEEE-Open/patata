@@ -48,7 +48,7 @@ function print_tasktable()
 {
     $_SESSION['max_row'] = get_number_to_do();
     $db = new MyDB();
-    $per_page = 3;
+    $per_page = 10;
     if (!isset($_SESSION['offset'])) {
         $_SESSION['offset'] = 0;
     }
