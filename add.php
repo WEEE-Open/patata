@@ -14,7 +14,9 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
     <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <style>
-        * { font-family: 'Noto Sans', sans-serif; }
+        * {
+            font-family: 'Noto Sans', sans-serif;
+        }
     </style>
 </head>
 
@@ -54,12 +56,35 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                         </tr>
                     </thead>
                     <tbody>
+                        <form method="post" action="add.php">
+                            <tr>
+                                <td>
+                                    <select required name="tasktype">
+                                        <option><?php echo $_POST['typeErr'] ?></option>
+                                        <?php foreach (TYPE_EMOJI as $text => $emoji) {
+                                            $taskName = TYPE_DESCRIPTION[$text] ?>
+                                        ?><option value="<?= $text ?>"><?= "$emoji $taskName" ?></option>
+                                        <?php 
+                                    } ?>
+                                    </select>
+                                    </span></td>
+                                <td><input type="text" name="title"></td>
+                                <td><input type="text" name="description"></td>
+                                <td><input type="text" name="durate" size="3"></td>
+                                <td><input type="text" name="maintainer"></td>
+                                <td><input type="submit" name="submit" value="Add"></td>
+                                <td></td>
+                            </tr>
+                        </form>
+
                         <?php
+
                         $db = new MyDB();
 
                         list($result, $maintainer) = get_tasks_and_maintainers($db, $done, true);
 
                         while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) :
+
 
                             ?><form method="post" action="add.php">
                             <tr>
@@ -87,26 +112,6 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                             </tr>
                         </form>
                         <?php endwhile; ?>
-                        <form method="post" action="add.php">
-                            <tr>
-                                <td>
-                                    <select required name="tasktype">
-                                        <option><?php echo $_POST['typeErr'] ?></option>
-                                        <?php foreach (TYPE_EMOJI as $text => $emoji) {
-                                            $taskName = TYPE_DESCRIPTION[$text] ?>
-                                        ?><option value="<?= $text ?>"><?= "$emoji $taskName" ?></option>
-                                        <?php 
-                                    } ?>
-                                    </select>
-                                    </span></td>
-                                <td><input type="text" name="title"></td>
-                                <td><input type="text" name="description"></td>
-                                <td><input type="text" name="durate" size="3"></td>
-                                <td><input type="text" name="maintainer"></td>
-                                <td><input type="submit" name="submit" value="Add"></td>
-                                <td></td>
-                            </tr>
-                        </form>
                     </tbody>
                 </table>
             </div>
