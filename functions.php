@@ -36,17 +36,17 @@ function get_max_id()
     return $temp['ID'];
 }
 
-function get_number_to_do()
+function get_task_number(int $done = 0)
 {
     $db = new MyDB();
-    $temp = $db->query("SELECT COUNT (ID) ID FROM TASK WHERE DONE = 0");
+    $temp = $db->query("SELECT COUNT (ID) ID FROM TASK WHERE DONE = $done");
     $temp = $temp->fetchArray(SQLITE3_ASSOC);
     return $temp['ID'];
 }
 
 function print_tasktable()
 {
-    $_SESSION['max_row'] = get_number_to_do();
+    $_SESSION['max_row'] = get_task_number();
     $db = new MyDB();
     $per_page = 10;
     if (!isset($_SESSION['offset'])) {
@@ -105,14 +105,24 @@ function print_tasktable()
 function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5, int &$offset = 0): array
 {
     $done = (int)$done;
+    $where_clause = "";
+    $where_clause = "Done = ";
 
     if ($tasks_per_page < 0) {
-        $row_count = get_number_to_do();
+        $row_count = get_task_number(1);
         $offset = 0;
+        if ($done) {
+            $date = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m") - 1, date("d"),   date("Y")));
+            $where_clause .= $done . " AND Date>=\"" . $date . "\"";
+        } else {
+            $where_clause .= $done;
+        }
+        
     } else {
         $row_count = $tasks_per_page;
-        $total_tasks = get_number_to_do();
+        $total_tasks = get_task_number();
         $offset += $tasks_per_page;
+        $where_clause .= $done;
         if ($offset >= $total_tasks) {
             $offset = 0;
         }
@@ -120,14 +130,14 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5
 
     $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done
                                             FROM TASK 
-                                            WHERE Done = $done
+                                            WHERE $where_clause
                                             ORDER BY ID
                                             LIMIT $row_count OFFSET $offset");
     $result2 = $db->query("SELECT T_ID, Maintainer
                                             FROM T_MAINTAINER
                                             WHERE T_ID IN (SELECT ID
                                                             FROM TASK 
-                                                            WHERE Done = $done
+                                                            WHERE $where_clause
                                                             LIMIT $row_count OFFSET $offset)
                                             ORDER BY T_ID");
     $maintainer = array();
