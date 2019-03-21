@@ -25,9 +25,10 @@ exit(0);
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+	<title>Patata</title>
     <link rel="icon" type="image/svg+xml" href="patata.svg">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -46,18 +47,18 @@ exit(0);
 
         <div class="row">
             <div class="col-md-6">
-                <div id='ct' style="padding-left: 30px;margin-left: 0px;">></div>
+                <div id='ct' style="padding-left: 30px;margin-left: 0;"></div>
                 <div id='ct2' style="padding-left: 30px;"></div>
             </div>
             <div class="col-md-6">
-                <div id='quotesbox' class="text-right" style="margin-right: 0px;padding-right: 30px;"></div>
-                <div id='authorbox' class="text-right" style="margin-right: 0px;padding-right: 30px;"></div>
+                <div id='quotesbox' class="text-right" style="margin-right: 0;padding-right: 30px;"></div>
+                <div id='authorbox' class="text-right" style="margin-right: 0;padding-right: 30px;"></div>
             </div>
             <script>
                 /**
                  * Update quotes every N seconds
                  */
-                let refresh_timer = 1000 * 60 * 30;
+                const refresh_timer = 1000 * 60 * 30;
 
                 function auto_update_qt() {
                     fetch('?quote')
@@ -117,23 +118,23 @@ exit(0);
                     </thead>
                     <tbody>
                         <tr>
-                            <td><a href="/item/R374">R374</a></td>
+                            <td>R374</td>
                             <td>2018-10-18, 20:01</td>
                         </tr>
                         <tr>
-                            <td><a href="/item/R373">R373</a></td>
+                            <td>R373</td>
                             <td>2018-10-18, 20:01</td>
                         </tr>
                         <tr>
-                            <td><a href="/item/C165">C165</a></td>
+                            <td>C165</td>
                             <td>2018-10-18, 20:01</td>
                         </tr>
                         <tr>
-                            <td><a href="/item/B152">B152</a></td>
+                            <td>B152</td>
                             <td>2018-10-18, 20:01</td>
                         </tr>
                         <tr>
-                            <td><a href="/item/R372">R372</a></td>
+                            <td>R372</td>
                             <td>2018-10-18, 13:20</td>
                         </tr>
                     </tbody>
@@ -151,23 +152,23 @@ exit(0);
                     </thead>
                     <tbody>
                         <tr>
-                            <td><a href="/item/R374">R374</a></td>
+                            <td>R374</td>
                             <td>2018-10-18, 20:01</td>
                         </tr>
                         <tr>
-                            <td><a href="/item/R373">R373</a></td>
+                            <td>R373</td>
                             <td>2018-10-18, 20:01</td>
                         </tr>
                         <tr>
-                            <td><a href="/item/C165">C165</a></td>
+                            <td>C165</td>
                             <td>2018-10-18, 20:01</td>
                         </tr>
                         <tr>
-                            <td><a href="/item/B152">B152</a></td>
+                            <td>B152</td>
                             <td>2018-10-18, 20:01</td>
                         </tr>
                         <tr>
-                            <td><a href="/item/R372">R372</a></td>
+                            <td>R372</td>
                             <td>2018-10-18, 13:20</td>
                         </tr>
                     </tbody>
@@ -177,9 +178,10 @@ exit(0);
     </div>
 
     <script type="text/javascript">
-        function display_c() { //Refresh time for the date function
-            var refresh = 1000;
-            mytime = setTimeout('display_ct()', refresh)
+		// Refresh time for the date function
+        function display_c() {
+            const refresh = 1000;
+            setTimeout(display_ct, refresh);
         }
 
         function addZero(i) {
@@ -190,20 +192,20 @@ exit(0);
         }
 
         function display_ct() { //Date generator function
-            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            var x = new Date()
-            var d = addZero(x.getDate())
-            var mo = months[x.getMonth()]
-            var y = addZero(x.getFullYear())
-            var h = addZero(x.getHours())
-            var mi = addZero(x.getMinutes())
-            var s = addZero(x.getSeconds())
-            var wd = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-            var td = wd[x.getDay()]
-            var x1 = td + " - " + d + " " + mo + " " + y
-            var x2 = h + ":" + mi + ":" + s
-            document.getElementById('ct').innerHTML = x1
-            document.getElementById('ct2').innerHTML = x2
+			const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+			let x = new Date();
+			let d = addZero(x.getDate());
+			let mo = months[x.getMonth()];
+            let y = addZero(x.getFullYear());
+            let h = addZero(x.getHours());
+            let mi = addZero(x.getMinutes());
+            let s = addZero(x.getSeconds());
+            const wd = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            let td = wd[x.getDay()];
+            let x1 = td + " - " + d + " " + mo + " " + y;
+            let x2 = h + ":" + mi + ":" + s;
+            document.getElementById('ct').textContent = x1;
+            document.getElementById('ct2').textContent = x2;
 
             display_c();
         }
