@@ -14,3 +14,9 @@ sqlite3 ../patabase.db < populate.sql
 ```
 
 Then copy `quotes-example.json` to `quotes.json`
+
+## License
+
+MIT
+
+[Bootstrap 4 Dark theme](https://github.com/ForEvolve/bootstrap-dark) not made by us but still under MIT license.
