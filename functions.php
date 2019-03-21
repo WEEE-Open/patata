@@ -109,12 +109,13 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5
     $where_clause = "Done = ";
 
     if ($tasks_per_page < 0) {
-        $row_count = get_task_number(1);
         $offset = 0;
         if ($done) {
+            $row_count = get_task_number(1);
             $date = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m") - 1, date("d"),   date("Y")));
             $where_clause .= $done . " AND Date>=\"" . $date . "\"";
         } else {
+            $row_count = get_task_number();
             $where_clause .= $done;
         }
         
