@@ -105,7 +105,6 @@ function print_tasktable()
 function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5, int &$offset = 0): array
 {
     $done = (int)$done;
-    $where_clause = "";
     $where_clause = "Done = ";
 
     if ($tasks_per_page < 0) {
@@ -114,9 +113,11 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5
             $row_count = get_task_number(1);
             $date = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m") - 1, date("d"),   date("Y")));
             $where_clause .= $done . " AND Date>=\"" . $date . "\"";
+            $order_clause = "Date DESC";
         } else {
             $row_count = get_task_number();
             $where_clause .= $done;
+            $order_clause = "ID DESC";
         }
         
     } else {
@@ -124,6 +125,7 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5
         $total_tasks = get_task_number();
         $offset += $tasks_per_page;
         $where_clause .= $done;
+        $order_clause = "ID";
         if ($offset >= $total_tasks) {
             $offset = 0;
         }
@@ -132,7 +134,7 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5
     $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done
                                             FROM TASK 
                                             WHERE $where_clause
-                                            ORDER BY ID
+                                            ORDER BY $order_clause
                                             LIMIT $row_count OFFSET $offset");
     $result2 = $db->query("SELECT T_ID, Maintainer
                                             FROM T_MAINTAINER
