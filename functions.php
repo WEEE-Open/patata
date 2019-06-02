@@ -52,7 +52,7 @@ function print_tasktable()
     if (!isset($_SESSION['offset'])) {
         $_SESSION['offset'] = 0;
     }
-    list($result, $maintainer) = get_tasks_and_maintainers($db, false, $per_page, $_SESSION['offset']);
+    list($result, $maintainer) = get_tasks_and_maintainers($db, false, 0, 0, $per_page, $_SESSION['offset']);
 
     $page = 1 + floor(($_SESSION['offset']) / $per_page);
     $pages = ceil($_SESSION['max_row'] / $per_page);
@@ -99,10 +99,11 @@ function print_tasktable()
 /**
  * @param MyDB $db The patabase
  * @param $done bool True if you only want completed tasks, false if you only want tasks that are still to do (default)
+ * @param $from_d and $to_d range period
  * @param $tasks_per_page int Tasks per page, shows all if less than 0
  * @return array $result, $maintainer
  */
-function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5, int &$offset = 0): array
+function get_tasks_and_maintainers(MyDB $db, bool $done, $from_d, $to_d, int $tasks_per_page = 5, int &$offset = 0): array
 {
     $done = (int)$done;
     $where_clause = "Done = ";
@@ -111,8 +112,8 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5
         $offset = 0;
         if ($done) {
             $row_count = get_task_number(1);
-            $date = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m") - 1, date("d"),   date("Y")));
-            $where_clause .= $done . " AND Date>=\"" . $date . "\"";
+            $where_clause .= $done;
+            $where_clause .= " AND Date BETWEEN \"". $from_d ."\" AND \"". $to_d ."\"";
             $order_clause = "Date DESC";
         } else {
             $row_count = get_task_number();

@@ -5,7 +5,7 @@ include 'functions.php';
 
 $done = isset($_GET['done']) && $_GET['done'] === 'true';
 ?>
-<html>
+<html lang="en-CA">
 
 <head>
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
@@ -32,6 +32,27 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
             <div class="col-md-6">
                 <?php if ($done) : ?>
                 <a class="float-right" href="?done=false">View tasks to do</a>
+                <form method="post" action="add.php?done=true">
+                    <?php 
+                    if (isset($_POST['from_d']) && isset($_POST['to_d'])) : 
+                        if ($_POST['from_d']<=$_POST['to_d']):
+                            $from_d = $_POST['from_d'];
+                            $to_d = $_POST['to_d'];
+                        else :
+                            $from_d = $_POST['to_d'];
+                            $to_d = $_POST['from_d'];
+                        endif;
+                    else :
+                        $from_d = date("Y-m-d", mktime(0, 0, 0, date("m") - 1, date("d"),   date("Y")));
+                        $to_d = date("Y-m-d");
+                    endif
+                    ?>
+                    View completed task from:
+                    <input type="date" name="from_d" value="<?php echo $from_d ?>" min="2018-01-01"><br>
+                    to:
+                    <input type="date" name="to_d" value="<?php echo $to_d ?>" max="<?php echo date("Y-m-d") ?>"><br>
+                    <input type="submit" name="submit" value="View" style="margin-left: 200px">
+                </form> 
                 <?php else : ?>
                 <a class="float-right" href="?done=true">View completed tasks</a>
                 <?php endif ?>
@@ -63,11 +84,11 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                                         <option><?php echo $_POST['typeErr'] ?></option>
                                         <?php foreach (TYPE_EMOJI as $text => $emoji) {
                                             $taskName = TYPE_DESCRIPTION[$text] ?>
-                                        ?><option value="<?= $text ?>"><?= "$emoji $taskName" ?></option>
-                                        <?php 
-                                    } ?>
-                                    </select>
-                                    </span></td>
+                                            <option value="<?= $text ?>"><?= "$emoji $taskName" ?></option>
+                                            <?php 
+                                            } ?>
+                                    </select></span>
+                                </td>
                                 <td><input type="text" name="title"></td>
                                 <td><input type="text" name="description"></td>
                                 <td><input type="text" name="durate" size="3"></td>
@@ -81,7 +102,7 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
 
                         $db = new MyDB();
 
-                        list($result, $maintainer) = get_tasks_and_maintainers($db, $done, -1);
+                        list($result, $maintainer) = get_tasks_and_maintainers($db, $done, $from_d, $to_d, -1);
 
                         while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) :
 
