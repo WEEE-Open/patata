@@ -8,6 +8,20 @@ if (isset($_GET['quote'])) {
     header('Content-Type', 'application/json');
     echo json_encode($quote);
     exit(0);
+} else if (isset($_GET['stats'])) {
+    ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Stat iStiche™ (<?= htmlspecialchars($_GET['stats']) ?>)</title>
+</head>
+
+<body>
+    <?php print_stats($_GET['stats']) ?>
+</body>
+<?php
+    exit(0);
 } else if (isset($_GET['tasks'])) {
     ?>
 <!DOCTYPE html>

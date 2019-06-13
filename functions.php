@@ -44,6 +44,29 @@ function get_task_number(int $done = 0)
     return $temp['ID'];
 }
 
+function print_stats(string $stat)
+{
+    require_once 'conf.php';
+    $url = TARALLO_URL;
+    $data = ['username' => TARALLO_USER, 'password' => TARALLO_PASS];
+    $session = curl_init($url);
+    $options = [
+        'http' => [
+            'header'  => "Content-type: application/json\r\nAccept: application/json\r\n",
+            'method'  => 'POST',
+            'content' => json_encode($data),
+        ]
+    ];
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    if ($result === FALSE) {
+        echo 'ERRORONEEEE';
+        exit(1);
+    }
+
+
+}
+
 function print_tasktable()
 {
     $_SESSION['max_row'] = get_task_number();
@@ -57,43 +80,42 @@ function print_tasktable()
     $page = 1 + floor(($_SESSION['offset']) / $per_page);
     $pages = ceil($_SESSION['max_row'] / $per_page);
     ?>
-<div id='tasktable'>
-    <h5 class="text-center">Tasklist <?= "page $page of $pages" ?></h5>
-    <table class="table table-striped" style="margin: 0 auto;">
-        <thead>
-            <tr>
-                <th>Type</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Durate (Minutes)</th>
-                <th>Maintainer</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) {
+    <div id='tasktable'>
+        <h5 class="text-center">Tasklist <?= "page $page of $pages" ?></h5>
+        <table class="table table-striped" style="margin: 0 auto;">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Durate (Minutes)</th>
+                    <th>Maintainer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) {
 
-                $emoji = TYPE_EMOJI[$tasklist['TaskType']];
-                $taskName = TYPE_DESCRIPTION[$tasklist['TaskType']];
+                    $emoji = TYPE_EMOJI[$tasklist['TaskType']];
+                    $taskName = TYPE_DESCRIPTION[$tasklist['TaskType']];
 
-                echo "<tr>";
-                echo "<td title=\"$taskName\">" . $emoji . "</td>";
-                echo "<td>" . $tasklist['Title'] . "</td>";
-                echo "<td>";
-                echo isset($tasklist['Description']) ? $tasklist['Description'] : "";
-                echo "</td>";
-                echo "<td>" . $tasklist['Durate'] . "</td>";
-                echo "<td>";
-                echo isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : "";
-                echo "</td>";
-                echo "</tr>";
-            }
-            ?>
-        </tbody>
-    </table>
-</div>
-<?php
-
+                    echo "<tr>";
+                    echo "<td title=\"$taskName\">" . $emoji . "</td>";
+                    echo "<td>" . $tasklist['Title'] . "</td>";
+                    echo "<td>";
+                    echo isset($tasklist['Description']) ? $tasklist['Description'] : "";
+                    echo "</td>";
+                    echo "<td>" . $tasklist['Durate'] . "</td>";
+                    echo "<td>";
+                    echo isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : "";
+                    echo "</td>";
+                    echo "</tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
 }
 
 /**
