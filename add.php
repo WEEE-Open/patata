@@ -111,7 +111,6 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                             ?><form method='post' action='add.php'>
                             <tr>
                                 <input type='hidden' name='idn' value='<?= $tasklist['ID'] ?>'>
-
                                 <td>
                                     <select required name='tasktype'>
                                         <?php foreach (TYPE_EMOJI as $text => $emoji) { ?>
@@ -126,6 +125,8 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                                 <td><input type='text' name='durate' size='3' value='<?= $tasklist['Durate'] ?>'></td>
                                 <td><input type='text' name='maintainer' value='<?= isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : '' ?>'></td>
                                 <td><input type='submit' name='submit' value='Save'></td>
+                                <input type='hidden' name='date' value='<?= $tasklist['Date'] ?>'>
+                                <input type='hidden' name='done' value='<?= $tasklist['Done'] ?>'>
                                 <?php if ($done) : ?>
                                 <td><input type='submit' name='submit' value='Undo'></td>
                                 <?php else : ?>

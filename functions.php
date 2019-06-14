@@ -155,7 +155,7 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, $from_d, $to_d, int $ta
         }
     }
 
-    $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done
+    $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done, Date
                                             FROM TASK 
                                             WHERE $where_clause
                                             ORDER BY $order_clause
@@ -203,6 +203,11 @@ function handle_post()
         if (!isset($type)) {
             $_POST['typeErr'] = 'Select a valid task type';
         }
+        if (empty($_POST['date'])) {
+            $date = null;
+        } else {
+            $date = $_POST['date'];
+        }
         $description = test_input($_POST['description']);
         $durate = (int)$_POST['durate'];
         $maintainer = explode(',', $_POST['maintainer']);
@@ -213,7 +218,7 @@ function handle_post()
         unset($temp_maintainer);
         $edit = $_POST['submit'];
         if ($edit === 'Save') {
-            update_task($db, $title, $description, $durate, $type, $idn, $maintainer, $done, null);
+            update_task($db, $title, $description, $durate, $type, $idn, $maintainer, $done, $date);
         } elseif ($edit === 'Add') {
             add_new_task($db, $title, $description, $durate, $type, $maintainer);
         } elseif ($edit === 'Done') {
