@@ -1,28 +1,28 @@
 <?php
 const TYPE_EMOJI = [
-    "E" => "💡",
-    "I" => "💻",
-    "M" => "🔨",
-    "D" => "📘",
-    "C" => "🧽",
-    "V" => "🍀",
-    "R" => "💾",
-    "S" => "🎮",
+    'E' => '💡',
+    'I' => '💻',
+    'M' => '🔨',
+    'D' => '📘',
+    'C' => '🧽',
+    'V' => '🍀',
+    'R' => '💾',
+    'S' => '🎮',
 ];
 const TYPE_DESCRIPTION = [
-    "E" => "Elettronica",
-    "I" => "Informatica",
-    "M" => "Meccanica",
-    "D" => "Documentazione",
-    "C" => "Riordino",
-    "V" => "Eventi",
-    "R" => "Retrocomputing",
-    "S" => "Svago",
+    'E' => 'Elettronica',
+    'I' => 'Informatica',
+    'M' => 'Meccanica',
+    'D' => 'Documentazione',
+    'C' => 'Riordino',
+    'V' => 'Eventi',
+    'R' => 'Retrocomputing',
+    'S' => 'Svago',
 ];
 
 function get_random_quote()
 {
-    $quotes_file = file_get_contents("quotes.json");
+    $quotes_file = file_get_contents('quotes.json');
     $quotes = json_decode($quotes_file, true);
     $quote_id = rand(0, count($quotes) - 1);
     return $quotes[$quote_id];
@@ -52,7 +52,7 @@ function print_stats(string $stat)
     $session = curl_init($url);
     $options = [
         'http' => [
-            'header'  => "Content-type: application/json\r\nAccept: application/json\r\n",
+            'header'  => 'Content-type: application/json\r\nAccept: application/json\r\n',
             'method'  => 'POST',
             'content' => json_encode($data),
         ]
@@ -81,8 +81,8 @@ function print_tasktable()
     $pages = ceil($_SESSION['max_row'] / $per_page);
     ?>
     <div id='tasktable'>
-        <h5 class="text-center">Tasklist <?= "page $page of $pages" ?></h5>
-        <table class="table table-striped" style="margin: 0 auto;">
+        <h5 class='text-center'>Tasklist <?= "page $page of $pages" ?></h5>
+        <table class='table table-striped' style='margin: 0 auto;'>
             <thead>
                 <tr>
                     <th>Type</th>
@@ -99,17 +99,17 @@ function print_tasktable()
                     $emoji = TYPE_EMOJI[$tasklist['TaskType']];
                     $taskName = TYPE_DESCRIPTION[$tasklist['TaskType']];
 
-                    echo "<tr>";
-                    echo "<td title=\"$taskName\">" . $emoji . "</td>";
-                    echo "<td>" . $tasklist['Title'] . "</td>";
-                    echo "<td>";
-                    echo isset($tasklist['Description']) ? $tasklist['Description'] : "";
-                    echo "</td>";
-                    echo "<td>" . $tasklist['Durate'] . "</td>";
-                    echo "<td>";
-                    echo isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : "";
-                    echo "</td>";
-                    echo "</tr>";
+                    echo '<tr>';
+                    echo '<td title=\'$taskName\'>' . $emoji . '</td>';
+                    echo '<td>' . $tasklist['Title'] . '</td>';
+                    echo '<td>';
+                    echo isset($tasklist['Description']) ? $tasklist['Description'] : '';
+                    echo '</td>';
+                    echo '<td>' . $tasklist['Durate'] . '</td>';
+                    echo '<td>';
+                    echo isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : '';
+                    echo '</td>';
+                    echo '</tr>';
                 }
                 ?>
             </tbody>
@@ -128,19 +128,20 @@ function print_tasktable()
 function get_tasks_and_maintainers(MyDB $db, bool $done, $from_d, $to_d, int $tasks_per_page = 5, int &$offset = 0): array
 {
     $done = (int)$done;
-    $where_clause = "Done = ";
+    $where_clause = 'Done = ';
 
     if ($tasks_per_page < 0) {
         $offset = 0;
+        $to_d++;
         if ($done) {
             $row_count = get_task_number(1);
             $where_clause .= $done;
-            $where_clause .= " AND Date BETWEEN \"". $from_d ."\" AND \"". $to_d ."\"";
-            $order_clause = "Date DESC";
+            $where_clause .= ' AND Date BETWEEN \''. $from_d .'\' AND \''. $to_d .'\'';
+            $order_clause = 'Date DESC';
         } else {
             $row_count = get_task_number();
             $where_clause .= $done;
-            $order_clause = "ID DESC";
+            $order_clause = 'ID DESC';
         }
         
     } else {
@@ -148,7 +149,7 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, $from_d, $to_d, int $ta
         $total_tasks = get_task_number();
         $offset += $tasks_per_page;
         $where_clause .= $done;
-        $order_clause = "ID";
+        $order_clause = 'ID';
         if ($offset >= $total_tasks) {
             $offset = 0;
         }
@@ -200,24 +201,25 @@ function handle_post()
             }
         }
         if (!isset($type)) {
-            $_POST['typeErr'] = "Select a valid task type";
+            $_POST['typeErr'] = 'Select a valid task type';
         }
         $description = test_input($_POST['description']);
         $durate = (int)$_POST['durate'];
         $maintainer = explode(',', $_POST['maintainer']);
+        $done = (bool)$_POST['done'];
         foreach ($maintainer as &$temp_maintainer) {
             $temp_maintainer = test_input($temp_maintainer);
         }
         unset($temp_maintainer);
         $edit = $_POST['submit'];
-        if ($edit === "Save") {
-            update_task($db, $title, $description, $durate, $type, $idn, $maintainer, false, null);
-        } elseif ($edit === "Add") {
+        if ($edit === 'Save') {
+            update_task($db, $title, $description, $durate, $type, $idn, $maintainer, $done, null);
+        } elseif ($edit === 'Add') {
             add_new_task($db, $title, $description, $durate, $type, $maintainer);
-        } elseif ($edit === "Done") {
-            $date = date("Y-m-d H:i:s");
+        } elseif ($edit === 'Done') {
+            $date = date('Y-m-d H:i:s');
             update_task($db, $title, $description, $durate, $type, $idn, $maintainer, true, $date);
-        } elseif ($edit === "Undo") {
+        } elseif ($edit === 'Undo') {
             update_task($db, $title, $description, $durate, $type, $idn, $maintainer, false, null);
         }
     }
