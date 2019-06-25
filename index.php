@@ -31,9 +31,9 @@ exit(0);
 	<title>Patata</title>
     <link rel="icon" type="image/svg+xml" href="patata.svg">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
-    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+	<script src="jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script src="bootstrap.min.js"></script>
 	<link rel="stylesheet" id="darktheme" type="text/css" href="bootstrap-dark.min.css" />
     <style>
         * {
@@ -42,7 +42,7 @@ exit(0);
     </style>
 </head>
 
-<body onload="display_ct(); auto_update_qt(); auto_switch_theme(true)">
+<body onload="display_ct(); auto_update_qt(); auto_switch_theme()">
     <div class="container">
 
         <div class="row">
@@ -68,14 +68,9 @@ exit(0);
                 }
 
 				let theme = document.getElementById('darktheme');
-				function auto_switch_theme(first) {
+				function auto_switch_theme() {
 					theme.disabled = !theme.disabled;
-					if(first) {
-						setTimeout(auto_switch_theme, 1000);
-					} else {
-						setTimeout(auto_switch_theme, refresh_timer);
-					}
-
+					setTimeout(auto_switch_theme, refresh_timer);
 				}
 
                 /**
