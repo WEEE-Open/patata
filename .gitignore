@@ -3,3 +3,4 @@ patabase.db
 .vscode/launch.json
 .idea/
 quotes.json
+conf.php

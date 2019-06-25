@@ -1,28 +1,28 @@
 <?php
 const TYPE_EMOJI = [
-    "E" => "💡",
-    "I" => "💻",
-    "M" => "🔨",
-    "D" => "📘",
-    "C" => "🧽",
-    "V" => "🍀",
-    "R" => "💾",
-    "S" => "🎮",
+    'E' => '💡',
+    'I' => '💻',
+    'M' => '🔨',
+    'D' => '📘',
+    'C' => '🧽',
+    'V' => '🍀',
+    'R' => '💾',
+    'S' => '🎮',
 ];
 const TYPE_DESCRIPTION = [
-    "E" => "Elettronica",
-    "I" => "Informatica",
-    "M" => "Meccanica",
-    "D" => "Documentazione",
-    "C" => "Riordino",
-    "V" => "Eventi",
-    "R" => "Retrocomputing",
-    "S" => "Svago",
+    'E' => 'Elettronica',
+    'I' => 'Informatica',
+    'M' => 'Meccanica',
+    'D' => 'Documentazione',
+    'C' => 'Riordino',
+    'V' => 'Eventi',
+    'R' => 'Retrocomputing',
+    'S' => 'Svago',
 ];
 
 function get_random_quote()
 {
-    $quotes_file = file_get_contents("quotes.json");
+    $quotes_file = file_get_contents('quotes.json');
     $quotes = json_decode($quotes_file, true);
     $quote_id = rand(0, count($quotes) - 1);
     return $quotes[$quote_id];
@@ -44,6 +44,29 @@ function get_task_number(int $done = 0)
     return $temp['ID'];
 }
 
+function print_stats(string $stat)
+{
+    require_once 'conf.php';
+    $url = TARALLO_URL;
+    $data = ['username' => TARALLO_USER, 'password' => TARALLO_PASS];
+    $session = curl_init($url);
+    $options = [
+        'http' => [
+            'header'  => 'Content-type: application/json\r\nAccept: application/json\r\n',
+            'method'  => 'POST',
+            'content' => json_encode($data),
+        ]
+    ];
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    if ($result === FALSE) {
+        echo 'ERRORONEEEE';
+        exit(1);
+    }
+
+
+}
+
 function print_tasktable()
 {
     $_SESSION['max_row'] = get_task_number();
@@ -52,71 +75,73 @@ function print_tasktable()
     if (!isset($_SESSION['offset'])) {
         $_SESSION['offset'] = 0;
     }
-    list($result, $maintainer) = get_tasks_and_maintainers($db, false, $per_page, $_SESSION['offset']);
+    list($result, $maintainer) = get_tasks_and_maintainers($db, false, 0, 0, $per_page, $_SESSION['offset']);
 
     $page = 1 + floor(($_SESSION['offset']) / $per_page);
     $pages = ceil($_SESSION['max_row'] / $per_page);
     ?>
-<div id='tasktable'>
-    <h5 class="text-center">Tasklist <?= "page $page of $pages" ?></h5>
-    <table class="table table-striped" style="margin: 0 auto;">
-        <thead>
-            <tr>
-                <th>Type</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Durate (Minutes)</th>
-                <th>Maintainer</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) {
+    <div id='tasktable'>
+        <h5 class='text-center'>Tasklist <?= "page $page of $pages" ?></h5>
+        <table class='table table-striped' style='margin: 0 auto;'>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Durate (Minutes)</th>
+                    <th>Maintainer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) {
 
-                $emoji = TYPE_EMOJI[$tasklist['TaskType']];
-                $taskName = TYPE_DESCRIPTION[$tasklist['TaskType']];
+                    $emoji = TYPE_EMOJI[$tasklist['TaskType']];
+                    $taskName = TYPE_DESCRIPTION[$tasklist['TaskType']];
 
-                echo "<tr>";
-                echo "<td title=\"$taskName\">" . $emoji . "</td>";
-                echo "<td>" . $tasklist['Title'] . "</td>";
-                echo "<td>";
-                echo isset($tasklist['Description']) ? $tasklist['Description'] : "";
-                echo "</td>";
-                echo "<td>" . $tasklist['Durate'] . "</td>";
-                echo "<td>";
-                echo isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : "";
-                echo "</td>";
-                echo "</tr>";
-            }
-            ?>
-        </tbody>
-    </table>
-</div>
-<?php
-
+                    echo '<tr>';
+                    echo '<td title=\'$taskName\'>' . $emoji . '</td>';
+                    echo '<td>' . $tasklist['Title'] . '</td>';
+                    echo '<td>';
+                    echo isset($tasklist['Description']) ? $tasklist['Description'] : '';
+                    echo '</td>';
+                    echo '<td>' . $tasklist['Durate'] . '</td>';
+                    echo '<td>';
+                    echo isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : '';
+                    echo '</td>';
+                    echo '</tr>';
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
 }
 
 /**
  * @param MyDB $db The patabase
  * @param $done bool True if you only want completed tasks, false if you only want tasks that are still to do (default)
+ * @param $from_d and $to_d range period
  * @param $tasks_per_page int Tasks per page, shows all if less than 0
  * @return array $result, $maintainer
  */
-function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5, int &$offset = 0): array
+function get_tasks_and_maintainers(MyDB $db, bool $done, $from_d, $to_d, int $tasks_per_page = 5, int &$offset = 0): array
 {
     $done = (int)$done;
-    $where_clause = "";
-    $where_clause = "Done = ";
+    $where_clause = 'Done = ';
 
     if ($tasks_per_page < 0) {
         $offset = 0;
+        $to_d++;
         if ($done) {
             $row_count = get_task_number(1);
-            $date = date("Y-m-d H:i:s", mktime(0, 0, 0, date("m") - 1, date("d"),   date("Y")));
-            $where_clause .= $done . " AND Date>=\"" . $date . "\"";
+            $where_clause .= $done;
+            $where_clause .= ' AND Date BETWEEN \''. $from_d .'\' AND \''. $to_d .'\'';
+            $order_clause = 'Date DESC';
         } else {
             $row_count = get_task_number();
             $where_clause .= $done;
+            $order_clause = 'ID DESC';
         }
         
     } else {
@@ -124,15 +149,16 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, int $tasks_per_page = 5
         $total_tasks = get_task_number();
         $offset += $tasks_per_page;
         $where_clause .= $done;
+        $order_clause = 'ID';
         if ($offset >= $total_tasks) {
             $offset = 0;
         }
     }
 
-    $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done
+    $result = $db->query("SELECT ID, Tasktype, Title, Description, Durate, Done, Date
                                             FROM TASK 
                                             WHERE $where_clause
-                                            ORDER BY ID
+                                            ORDER BY $order_clause
                                             LIMIT $row_count OFFSET $offset");
     $result2 = $db->query("SELECT T_ID, Maintainer
                                             FROM T_MAINTAINER
@@ -175,24 +201,30 @@ function handle_post()
             }
         }
         if (!isset($type)) {
-            $_POST['typeErr'] = "Select a valid task type";
+            $_POST['typeErr'] = 'Select a valid task type';
+        }
+        if (empty($_POST['date'])) {
+            $date = null;
+        } else {
+            $date = $_POST['date'];
         }
         $description = test_input($_POST['description']);
         $durate = (int)$_POST['durate'];
         $maintainer = explode(',', $_POST['maintainer']);
+        $done = (bool)$_POST['done'];
         foreach ($maintainer as &$temp_maintainer) {
             $temp_maintainer = test_input($temp_maintainer);
         }
         unset($temp_maintainer);
         $edit = $_POST['submit'];
-        if ($edit === "Save") {
-            update_task($db, $title, $description, $durate, $type, $idn, $maintainer, false, null);
-        } elseif ($edit === "Add") {
+        if ($edit === 'Save') {
+            update_task($db, $title, $description, $durate, $type, $idn, $maintainer, $done, $date);
+        } elseif ($edit === 'Add') {
             add_new_task($db, $title, $description, $durate, $type, $maintainer);
-        } elseif ($edit === "Done") {
-            $date = date("Y-m-d H:i:s");
+        } elseif ($edit === 'Done') {
+            $date = date('Y-m-d H:i:s');
             update_task($db, $title, $description, $durate, $type, $idn, $maintainer, true, $date);
-        } elseif ($edit === "Undo") {
+        } elseif ($edit === 'Undo') {
             update_task($db, $title, $description, $durate, $type, $idn, $maintainer, false, null);
         }
     }

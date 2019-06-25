@@ -8,10 +8,24 @@ if (isset($_GET['quote'])) {
     header('Content-Type', 'application/json');
     echo json_encode($quote);
     exit(0);
+} else if (isset($_GET['stats'])) {
+    ?>
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <title>Stat iStiche™ (<?= htmlspecialchars($_GET['stats']) ?>)</title>
+</head>
+
+<body>
+    <?php print_stats($_GET['stats']) ?>
+</body>
+<?php
+    exit(0);
 } else if (isset($_GET['tasks'])) {
     ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 
 <head>
     <title>Patatasks™</title>
@@ -25,7 +39,7 @@ exit(0);
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 
 <head>
 	<title>Patata</title>
@@ -45,14 +59,14 @@ exit(0);
 <body onload="display_ct(); auto_update_qt(); auto_switch_theme()">
     <div class="container">
 
-        <div class="row">
-            <div class="col-md-6">
-                <div id='ct' style="padding-left: 30px;margin-left: 0;"></div>
-                <div id='ct2' style="padding-left: 30px;"></div>
+        <div class='row'>
+            <div class='col-md-6'>
+                <div id='ct' style='padding-left: 30px;margin-left: 0;'></div>
+                <div id='ct2' style='padding-left: 30px;'></div>
             </div>
-            <div class="col-md-6">
-                <div id='quotesbox' class="text-right" style="margin-right: 0;padding-right: 30px;"></div>
-                <div id='authorbox' class="text-right" style="margin-right: 0;padding-right: 30px;"></div>
+            <div class='col-md-6'>
+                <div id='quotesbox' class='text-right' style='margin-right: 0;padding-right: 30px;'></div>
+                <div id='authorbox' class='text-right' style='margin-right: 0;padding-right: 30px;'></div>
             </div>
             <script>
                 /**
@@ -78,33 +92,33 @@ exit(0);
                  */
                 function display_qt(quoteJson) {
                     document.getElementById('quotesbox').textContent = quoteJson['quote'];
-                    if ("context" in quoteJson) {
-                        document.getElementById('authorbox').textContent = "Cit. " + quoteJson['author'] + " " + quoteJson['context'];
+                    if ('context' in quoteJson) {
+                        document.getElementById('authorbox').textContent = 'Cit. ' + quoteJson['author'] + ' ' + quoteJson['context'];
                     } else {
-                        document.getElementById('authorbox').textContent = "Cit. " + quoteJson['author'];
+                        document.getElementById('authorbox').textContent = 'Cit. ' + quoteJson['author'];
                     }
                 }
             </script>
         </div>
 
-        <hr style="margin-left: 30px;margin-right: 30px;">
+        <hr style='margin-left: 30px;margin-right: 30px;'>
 
         <?php print_tasktable() ?>
 
-        <script type="text/javascript">
+        <script type='text/javascript'>
             // Reload task table every N seconds
-            let $tasktable = $("#tasktable");
+            let $tasktable = $('#tasktable');
             setInterval(function() {
-                $tasktable.load("index.php?tasks #tasktable");
+                $tasktable.load('index.php?tasks #tasktable');
             }, 10 * 1000);
         </script>
 
         <hr>
 
-        <div class="row">
-            <div class="col-md-6">
-                <h6 class="text-center">Recently added items</h6>
-                <table class="table table-striped table-sm text-center">
+        <div class='row'>
+            <div class='col-md-6'>
+                <h6 class='text-center'>Recently added items</h6>
+                <table class='table table-striped table-sm text-center'>
                     <thead>
                         <tr>
                             <th>Item</th>
@@ -136,9 +150,9 @@ exit(0);
                 </table>
             </div>
 
-            <div class="col-md-6">
-                <h6 class="text-center">Recently modified items</h6>
-                <table class="table table-striped table-sm text-center">
+            <div class='col-md-6'>
+                <h6 class='text-center'>Recently modified items</h6>
+                <table class='table table-striped table-sm text-center'>
                     <thead>
                         <tr>
                             <th>Item</th>
@@ -172,7 +186,7 @@ exit(0);
         </div>
     </div>
 
-    <script type="text/javascript">
+    <script type='text/javascript'>
 		// Refresh time for the date function
         function display_c() {
             const refresh = 1000;
@@ -181,13 +195,13 @@ exit(0);
 
         function addZero(i) {
             if (i < 10) {
-                i = "0" + i;
+                i = '0' + i;
             }
             return i;
         }
 
         function display_ct() { //Date generator function
-			const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+			const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 			let x = new Date();
 			let d = addZero(x.getDate());
 			let mo = months[x.getMonth()];
@@ -195,10 +209,10 @@ exit(0);
             let h = addZero(x.getHours());
             let mi = addZero(x.getMinutes());
             let s = addZero(x.getSeconds());
-            const wd = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const wd = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             let td = wd[x.getDay()];
-            let x1 = td + " - " + d + " " + mo + " " + y;
-            let x2 = h + ":" + mi + ":" + s;
+            let x1 = td + ' - ' + d + ' ' + mo + ' ' + y;
+            let x2 = h + ':' + mi + ':' + s;
             document.getElementById('ct').textContent = x1;
             document.getElementById('ct2').textContent = x2;
 
