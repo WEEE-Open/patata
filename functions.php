@@ -50,21 +50,18 @@ function print_stats(string $stat)
     $url = TARALLO_URL;
     $data = ['username' => TARALLO_USER, 'password' => TARALLO_PASS];
     $session = curl_init($url);
-    $options = [
-        'http' => [
-            'header'  => 'Content-type: application/json\r\nAccept: application/json\r\n',
-            'method'  => 'POST',
-            'content' => json_encode($data),
-        ]
-    ];
-    $context  = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
-    if ($result === FALSE) {
-        echo 'ERRORONEEEE';
-        exit(1);
-    }
+    curl_setopt($session, CURLOPT_COOKIEJAR, 'biscotti.txt');
+    curl_setopt($session, CURLOPT_URL, $url);
+    curl_setopt($session, CURLOPT_HTTPHEADER, ['Content-type: application/json', 'Accept: application/json']);
+    curl_setopt($session, CURLOPT_POST, 1);
+    curl_setopt($session, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_exec($session);
 
 
+
+    curl_close($session);
+    var_dump($session);
+    echo ('diosuillo');
 }
 
 function print_tasktable()
