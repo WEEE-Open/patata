@@ -32,15 +32,15 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
             <div class='col-md-6'>
                 <?php if ($done) : ?>
                 <a class='float-right' href='?done=false'>View tasks to do</a>
-                <form method='post' action='add.php?done=true'>
+                <form method='get' action='add.php'>
                     <?php 
-                    if (isset($_POST['from_d']) && isset($_POST['to_d'])) : 
-                        if ($_POST['from_d']<=$_POST['to_d']):
-                            $from_d = $_POST['from_d'];
-                            $to_d = $_POST['to_d'];
+                    if (isset($_GET['from_d']) && isset($_GET['to_d'])) : 
+                        if ($_GET['from_d']<=$_GET['to_d']):
+                            $from_d = $_GET['from_d'];
+                            $to_d = $_GET['to_d'];
                         else :
-                            $from_d = $_POST['to_d'];
-                            $to_d = $_POST['from_d'];
+                            $from_d = $_GET['to_d'];
+                            $to_d = $_GET['from_d'];
                         endif;
                     else :
                         $from_d = date('Y-m-d', mktime(0, 0, 0, date('m') - 1, date('d'),   date('Y')));
@@ -52,7 +52,8 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                     <input type='date' name='from_d' value='<?= $from_d ?>' min='2018-01-01' max='<?= $today ?>'><br>
                     to:
                     <input type='date' name='to_d' value='<?= $to_d ?>' min='2018-01-01' max='<?= $today ?>'><br>
-                    <input type='submit' name='submit' value='View' style='margin-left: 200px'>
+                    <input type='hidden' value='true' name='done'>
+                    <input type='submit' value='View'>
                 </form> 
                 <?php else : ?>
                 <a class='float-right' href='?done=true'>View completed tasks</a>
@@ -78,7 +79,7 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                         </tr>
                     </thead>
                     <tbody>
-                        <form method='post' action='add.php'>
+                        <form method='post' action="<?= $_SERVER['PHP_SELF'] ?>">
                             <tr>
                                 <td>
                                     <select required name='tasktype'>
@@ -100,7 +101,6 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                         </form>
 
                         <?php
-
                         $db = new MyDB();
 
                         list($result, $maintainer) = get_tasks_and_maintainers($db, $done, $from_d, $to_d, -1);
@@ -108,7 +108,7 @@ $done = isset($_GET['done']) && $_GET['done'] === 'true';
                         while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) :
 
 
-                            ?><form method='post' action='add.php'>
+                            ?><form method='post' action="<?= $_SERVER['PHP_SELF'] . '?' . $_SERVER['QUERY_STRING']?>">
                             <tr>
                                 <input type='hidden' name='idn' value='<?= $tasklist['ID'] ?>'>
                                 <td>
