@@ -116,73 +116,7 @@ exit(0);
         <hr>
 
         <div class='row'>
-            <div class='col-md-6'>
-                <h6 class='text-center'>Recently added items</h6>
-                <table class='table table-striped table-sm text-center'>
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Added</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>R374</td>
-                            <td>2018-10-18, 20:01</td>
-                        </tr>
-                        <tr>
-                            <td>R373</td>
-                            <td>2018-10-18, 20:01</td>
-                        </tr>
-                        <tr>
-                            <td>C165</td>
-                            <td>2018-10-18, 20:01</td>
-                        </tr>
-                        <tr>
-                            <td>B152</td>
-                            <td>2018-10-18, 20:01</td>
-                        </tr>
-                        <tr>
-                            <td>R372</td>
-                            <td>2018-10-18, 13:20</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class='col-md-6'>
-                <h6 class='text-center'>Recently modified items</h6>
-                <table class='table table-striped table-sm text-center'>
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Modified</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>R374</td>
-                            <td>2018-10-18, 20:01</td>
-                        </tr>
-                        <tr>
-                            <td>R373</td>
-                            <td>2018-10-18, 20:01</td>
-                        </tr>
-                        <tr>
-                            <td>C165</td>
-                            <td>2018-10-18, 20:01</td>
-                        </tr>
-                        <tr>
-                            <td>B152</td>
-                            <td>2018-10-18, 20:01</td>
-                        </tr>
-                        <tr>
-                            <td>R372</td>
-                            <td>2018-10-18, 13:20</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <?php print_stats('1') ?>
         </div>
     </div>
 

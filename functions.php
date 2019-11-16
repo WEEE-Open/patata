@@ -44,24 +44,109 @@ function get_task_number(int $done = 0)
     return $temp['ID'];
 }
 
-function print_stats(string $stat)
+function print_stats(string $stats)
 {
     require_once 'conf.php';
-    $url = TARALLO_URL;
-    $data = ['username' => TARALLO_USER, 'password' => TARALLO_PASS];
-    $session = curl_init($url);
-    curl_setopt($session, CURLOPT_COOKIEJAR, 'biscotti.txt');
-    curl_setopt($session, CURLOPT_URL, $url);
-    curl_setopt($session, CURLOPT_HTTPHEADER, ['Content-type: application/json', 'Accept: application/json']);
-    curl_setopt($session, CURLOPT_POST, 1);
-    curl_setopt($session, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_exec($session);
 
+    $curl = get_curl();
 
+    if ($stats === '1') {
+        print_stat($curl, 'add');
+        print_stat($curl, 'update');
+    } else {
+        print_stat($curl, 'update');
+        print_stat($curl, 'move');
+    }
 
-    curl_close($session);
-    var_dump($session);
-    echo ('diosuillo');
+    curl_close($curl);
+}
+
+function relative_date($time)
+{
+    $day = date('Y-m-d', $time);
+    if($day === date('Y-m-d', strtotime('today'))) {
+        return 'Today';
+    } elseif($day === date('Y-m-d', strtotime('yesterday'))) {
+        return 'Yesterday';
+    } else {
+        return $day;
+    }
+}
+
+function e($text)
+{
+    return htmlspecialchars($text, ENT_QUOTES | ENT_HTML5);
+}
+
+function print_stat($curl, string $stat)
+{
+    switch ($stat) {
+        case 'add':
+        default:
+            $url = '/v2/stats/getRecentAuditByType/C/10';
+            $title = 'Recently added items';
+            break;
+        case 'update':
+            $url = '/v2/stats/getRecentAuditByType/U/10';
+            $title = 'Recently modified items';
+            break;
+        case 'move':
+            $url = '/v2/stats/getRecentAuditByType/M/10';
+            $title = 'Recently moved items';
+            break;
+    }
+
+    $data = get_data_from_tarallo($curl, $url);
+    ?>
+    <div class='col-md-6'>
+        <h6 class='text-center'><?= e($title) ?></h6>
+        <table class='table table-striped table-sm text-center'>
+            <thead>
+            <tr>
+                <th>Item</th>
+                <th>Time</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($data as $item => $timestamp): $timestamp = (int)floatval($timestamp); ?>
+                <tr>
+                    <td><?= e($item) ?></td>
+                    <td><?= relative_date($timestamp) . date(' H:i') ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
+
+/**
+ * @param resource $curl CURL
+ * @param string $path /v2/whatever
+ *
+ * @return array
+ */
+function get_data_from_tarallo($curl, string $path): array
+{
+    $url = TARALLO_URL . $path;
+    curl_setopt($curl, CURLOPT_URL, $url);
+    $result = curl_exec($curl);
+    $result = json_decode($result, true);
+
+    return $result;
+}
+
+/**
+ * @return false|resource
+ */
+function get_curl()
+{
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, ['Authorization: Token ' . TARALLO_TOKEN, 'Accept: application/json']);
+    //curl_setopt($curl, CURLOPT_HTTPHEADER, ['Authorization: Token ' . TARALLO_TOKEN, 'Accept: application/json', 'Cookie: XDEBUG_SESSION=PHPSTORM']);
+
+    return $curl;
 }
 
 function print_tasktable()
@@ -81,34 +166,34 @@ function print_tasktable()
         <h5 class='text-center'>Tasklist <?= "page $page of $pages" ?></h5>
         <table class='table table-striped' style='margin: 0 auto;'>
             <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Durate (Minutes)</th>
-                    <th>Maintainer</th>
-                </tr>
+            <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Durate (Minutes)</th>
+                <th>Maintainer</th>
+            </tr>
             </thead>
             <tbody>
-                <?php
-                while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) {
+            <?php
+            while ($tasklist = $result->fetchArray(SQLITE3_ASSOC)) {
 
-                    $emoji = TYPE_EMOJI[$tasklist['TaskType']];
-                    $taskName = TYPE_DESCRIPTION[$tasklist['TaskType']];
+                $emoji = TYPE_EMOJI[$tasklist['TaskType']];
+                $taskName = TYPE_DESCRIPTION[$tasklist['TaskType']];
 
-                    echo '<tr>';
-                    echo '<td title=\'$taskName\'>' . $emoji . '</td>';
-                    echo '<td>' . $tasklist['Title'] . '</td>';
-                    echo '<td>';
-                    echo isset($tasklist['Description']) ? $tasklist['Description'] : '';
-                    echo '</td>';
-                    echo '<td>' . $tasklist['Durate'] . '</td>';
-                    echo '<td>';
-                    echo isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : '';
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                ?>
+                echo '<tr>';
+                echo '<td title=\'$taskName\'>' . $emoji . '</td>';
+                echo '<td>' . $tasklist['Title'] . '</td>';
+                echo '<td>';
+                echo isset($tasklist['Description']) ? $tasklist['Description'] : '';
+                echo '</td>';
+                echo '<td>' . $tasklist['Durate'] . '</td>';
+                echo '<td>';
+                echo isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : '';
+                echo '</td>';
+                echo '</tr>';
+            }
+            ?>
             </tbody>
         </table>
     </div>
@@ -118,8 +203,10 @@ function print_tasktable()
 /**
  * @param MyDB $db The patabase
  * @param $done bool True if you only want completed tasks, false if you only want tasks that are still to do (default)
- * @param $from_d and $to_d range period
+ * @param string $from_d range period
+ * @param string $to_d range period
  * @param $tasks_per_page int Tasks per page, shows all if less than 0
+ * @param int $offset
  * @return array $result, $maintainer
  */
 function get_tasks_and_maintainers(MyDB $db, bool $done, $from_d, $to_d, int $tasks_per_page = 5, int &$offset = 0): array
@@ -133,14 +220,14 @@ function get_tasks_and_maintainers(MyDB $db, bool $done, $from_d, $to_d, int $ta
         if ($done) {
             $row_count = get_task_number(1);
             $where_clause .= $done;
-            $where_clause .= ' AND Date BETWEEN \''. $from_d .'\' AND \''. $to_d .'\'';
+            $where_clause .= ' AND Date BETWEEN \'' . $from_d . '\' AND \'' . $to_d . '\'';
             $order_clause = 'Date DESC';
         } else {
             $row_count = get_task_number();
             $where_clause .= $done;
             $order_clause = 'ID DESC';
         }
-        
+
     } else {
         $row_count = $tasks_per_page;
         $total_tasks = get_task_number();
