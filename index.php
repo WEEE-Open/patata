@@ -103,21 +103,42 @@ exit(0);
 
         <hr style='margin-left: 30px;margin-right: 30px;'>
 
-        <?php print_tasktable() ?>
+        <div id="tasktablediv">
+            <?php print_tasktable() ?>
+        </div>
 
         <script type='text/javascript'>
-            // Reload task table every N seconds
-            let $tasktable = $('#tasktable');
-            setInterval(function() {
-                $tasktable.load('index.php?tasks #tasktable');
-            }, 10 * 1000);
+            (function() {
+                // Reload task table every N seconds
+                let interval = 10;
+                let $tasktable = $('#tasktablediv');
+                setInterval(function() {
+                    $tasktable.load('/index.php?tasks #tasktable');
+                }, interval * 1000);
+            }());
         </script>
 
         <hr>
 
-        <div class='row'>
-            <?php print_stats('1') ?>
+        <div id="statsdiv">
+            <?php print_stats('0') ?>
         </div>
+
+        <script type='text/javascript'>
+            (function() {
+                // Reload stats every N seconds
+                let interval = 22 * 60;
+                let page = 1;
+                let max = 2;
+                let $stats = $('#statsdiv');
+                setInterval(function () {
+                    let url = 'index.php? #stats';
+                    let param = 'stats=' + (page++ % max);
+                    //console.log(param);
+                    $stats.load(url, param);
+                }, interval * 1000);
+            }());
+        </script>
     </div>
 
     <script type='text/javascript'>

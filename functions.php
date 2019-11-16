@@ -50,13 +50,15 @@ function print_stats(string $stats)
 
     $curl = get_curl();
 
-    if ($stats === '1') {
+    echo '<div class="row" id="stats">';
+    if ($stats === '0') {
         print_stat($curl, 'add');
         print_stat($curl, 'update');
     } else {
         print_stat($curl, 'update');
         print_stat($curl, 'move');
     }
+    echo '</div>';
 
     curl_close($curl);
 }
