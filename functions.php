@@ -186,6 +186,17 @@ function download_tasks(): array
     return $stacks_json2;
 }
 
+function get_brightness($hex) {
+    // returns brightness value from 0 to 255
+    // strip off any leading #
+    $c_r = hexdec(substr($hex, 0, 2));
+    $c_g = hexdec(substr($hex, 2, 2));
+    $c_b = hexdec(substr($hex, 4, 2));
+
+    return (($c_r * 587) + ($c_g * 299) + ($c_b * 114)) / 1000;
+}
+
+
 function print_tasktable()
 {
     $stacks = download_tasks();
@@ -234,6 +245,8 @@ function print_tasktable()
 //    echo "</pre>";
 //    exit(0);
 
+
+
     // TODO: update everything
     $_SESSION['max_row'] = count($tasks);
     $per_page = 10;
@@ -265,7 +278,18 @@ function print_tasktable()
                 //echo '<td>' . htmlspecialchars($task['duedate']) . '</td>';
                 echo '<td>';
                 foreach ($task['labels'] as $label){
-                    echo "<span style=\"background-color: #{$label['color']};\">";
+                    echo "<span style=\"background-color: #{$label['color']};";
+                    if (get_brightness($label['color']) < 149){
+                        echo "color: white;";
+                    } else {
+                        echo "color: black;";
+                    }
+                    echo "padding: 5px;";
+                    echo "margin: 5px;";
+//                    echo "border: 2px solid grey;";
+                    echo "border-radius: 10px;";
+                    echo "box-shadow: 2px 2px 5px 1px #333333;";
+                    echo "\">";
                     echo htmlspecialchars($label['title']);
                     echo "</span>";
                 }
