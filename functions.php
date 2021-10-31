@@ -190,10 +190,10 @@ function print_tasktable()
 {
     $stacks = download_tasks();
 
-    echo "<pre>";
-    echo json_encode($stacks, JSON_PRETTY_PRINT);
-    echo "</pre>";
-    exit(0);
+//    echo "<pre style='color: white;'>";
+//    echo json_encode($stacks, JSON_PRETTY_PRINT);
+//    echo "</pre>";
+//    exit(0);
 
     // ["title" => "Fare cose", "assignee" => null, "tags" => [["Alta priorita'", "#f0f0f0"], ["Lollogne", "#00cccc"], "stack" => "Da fare"]
     // ["title" => "Riparare roba", "assignee" => "Mario Rossi", "tags" => [["Riparazioni ardite", "#aaaaaa"]], "stack" => "In corso"]
@@ -201,16 +201,45 @@ function print_tasktable()
 
     foreach($stacks as $stack) {
         // TODO: parse it all...
+        $cards = $stack['cards'];
+        foreach ($cards as $card){
+            $task = [];
+            $labels = $card['labels'];
+            $assigned_users = $card['assignedUsers'];
+            $task['title'] = $card['title'];
+            $task['description'] = $card['description'];
+            $task['duedate'] = $card["duedate"];
+            $task['createdate'] = $card["createdAt"];
+            $task['labels'] = [];
+            $task['assignee'] = [];
+            foreach ($labels as $label){
+                $task['labels'][] = [
+                        "title" => $label['title'],
+                        "color" => $label['color']
+                ];
+            }
+            foreach ($assigned_users as $assignee){
+                $displayname = $assignee['participant']['displayname'];
+                $displayname = explode(' (', $displayname);
+                array_pop($displayname);
+                $displayname = implode(" (", $displayname);
+                $task['assignee'][] = $displayname;
+            }
+            $tasks[] = $task;
+        }
     }
 
+//    echo "<pre style='color: white;'>";
+//    echo json_encode($tasks, JSON_PRETTY_PRINT);
+//    echo "</pre>";
+//    exit(0);
+
     // TODO: update everything
-    $_SESSION['max_row'] = get_task_number();
-    $db = new MyDB();
+    $_SESSION['max_row'] = count($tasks);
     $per_page = 10;
     if (!isset($_SESSION['offset'])) {
         $_SESSION['offset'] = 0;
     }
-    list($result, $maintainer) = get_tasks_and_maintainers($db, false, 0, 0, $per_page, $_SESSION['offset']);
 
     $page = 1 + floor(($_SESSION['offset']) / $per_page);
     $pages = ceil($_SESSION['max_row'] / $per_page);
@@ -221,23 +250,27 @@ function print_tasktable()
             <thead>
             <tr>
                 <th>Title</th>
-                <th>Description</th>
-                <th>Durate (Minutes)</th>
-                <th>Maintainer</th>
+<!--                <th>Description</th>-->
+<!--                <th>Due Date</th>-->
+                <th>Labels</th>
+                <th>Assignee</th>
             </tr>
             </thead>
             <tbody>
             <?php
             foreach ($tasks as $task) {
                 echo '<tr>';
-                echo '<td>' . $task['title'] . '</td>';
+                echo '<td>' . htmlspecialchars($task['title']) . '</td>';
+                //echo '<td>' . htmlspecialchars($task['description']) .'</td>';
+                //echo '<td>' . htmlspecialchars($task['duedate']) . '</td>';
                 echo '<td>';
-                echo isset($tasklist['Description']) ? $tasklist['Description'] : '';
+                foreach ($task['labels'] as $label){
+                    echo "<span style=\"background-color: #{$label['color']};\">";
+                    echo htmlspecialchars($label['title']);
+                    echo "</span>";
+                }
                 echo '</td>';
-                echo '<td>' . $tasklist['Durate'] . '</td>';
-                echo '<td>';
-                echo isset($maintainer[$tasklist['ID']]) ? implode(', ', $maintainer[$tasklist['ID']]) : '';
-                echo '</td>';
+                echo '<td>' . implode(', ', $task['assignee']) . '</td>';
                 echo '</tr>';
             }
             ?>
