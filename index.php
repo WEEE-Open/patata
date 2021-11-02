@@ -75,8 +75,8 @@ exit(0);
 </head>
 
 <body onload="display_ct();  auto_update_qt();  auto_switch_theme()">
-    <div class="container">
-        <div class='row'>
+    <div class="container d-flex flex-column" style="height: 100vh;">
+        <div class='row' style="flex-shrink: 1;">
             <div class='col-md-6'>
                 <div id='ct' style='padding-left: 30px;margin-left: 0;'></div>
                 <div id='ct2' style='padding-left: 30px;'></div>
@@ -125,7 +125,7 @@ exit(0);
 
         <hr style='margin-left: 30px;margin-right: 30px;'>
 
-        <div id="tasktablediv">
+        <div id="tasktablediv" style="flex-shrink: 1; overflow: hidden;">
             <?php print_tasktable() ?>
         </div>
 
@@ -142,7 +142,7 @@ exit(0);
 
         <hr>
 
-        <div id="statsdiv">
+        <div id="statsdiv" style="flex-grow: 1;">
             <?php print_stats('0') ?>
         </div>
 

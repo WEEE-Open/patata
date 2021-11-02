@@ -94,15 +94,15 @@ function print_stat($curl, string $stat)
     switch ($stat) {
         case 'add':
         default:
-            $url = '/v2/stats/getRecentAuditByType/C/10';
+            $url = '/v2/stats/getRecentAuditByType/C/5';
             $title = 'Recently added items';
             break;
         case 'update':
-            $url = '/v2/stats/getRecentAuditByType/U/10';
+            $url = '/v2/stats/getRecentAuditByType/U/5';
             $title = 'Recently modified items';
             break;
         case 'move':
-            $url = '/v2/stats/getRecentAuditByType/M/10';
+            $url = '/v2/stats/getRecentAuditByType/M/5';
             $title = 'Recently moved items';
             break;
     }
