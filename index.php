@@ -133,11 +133,20 @@ exit(0);
             (function() {
                 // Reload task table every N seconds
                 let interval = 10;
-                let $tasktable = $('#tasktablediv');
+                let $tasktablediv = $('#tasktablediv');
+                let $tasktable =  document.getElementById('tasktable');
                 setInterval(function() {
-                    $tasktable.load('/index.php?tasks #tasktable');
+                    $tasktablediv.load('/index.php?tasks #tasktable');
                 }, interval * 1000);
+                // Autoscroll table
+                setInterval(function () {
+                    let $duration = $tasktable.clientHeight * 15;
+                    $tasktablediv.animate({scrollTop: 0}, 800);
+                    $tasktablediv.animate({scrollTop: 0}, 2000);
+                    $tasktablediv.animate({scrollTop: $tasktable.clientHeight}, $duration, "linear");
+                })
             }());
+
         </script>
 
         <hr>

@@ -112,7 +112,7 @@ function print_stat($curl, string $stat)
     <div class='col-md-6'>
         <h6 class='text-center'><?= e($title) ?></h6>
         <table class='table table-striped table-sm text-center'>
-            <thead>
+            <thead style="position: sticky; top: 0;">
             <tr>
                 <th>Item</th>
                 <th>Time</th>
@@ -259,7 +259,7 @@ function print_tasktable()
     $pages = ceil($_SESSION['max_row'] / $per_page);
     ?>
     <div id='tasktable'>
-        <h5 class='text-center'>Tasklist <?= "page $page of $pages" ?></h5>
+<!--        <h5 class='text-center'>Tasklist --><?//= "page $page of $pages" ?><!--</h5>-->
         <table class='table table-striped' style='margin: 0 auto;'>
             <thead class="thead-dark">
             <tr>
