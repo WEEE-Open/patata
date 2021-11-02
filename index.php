@@ -125,6 +125,17 @@ exit(0);
 
         <hr style='margin-left: 30px;margin-right: 30px;'>
 
+        <div id='tasktableheader'>
+            <table class='table table-striped' style='margin: 0 auto;'>
+                <thead class="thead-dark">
+                <tr>
+                    <th id="taskHead">Task</th>
+                    <th id="assigneeHead">Assignee</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+
         <div id="tasktablediv" style="flex-shrink: 1; overflow: hidden;">
             <?php print_tasktable() ?>
         </div>
@@ -135,6 +146,14 @@ exit(0);
                 let interval = 10;
                 let $tasktablediv = $('#tasktablediv');
                 let $tasktable =  document.getElementById('tasktable');
+                let $taskHeader = document.getElementById('taskHead');
+                let $assigneeHeader = document.getElementById('assigneeHead');
+                let $tasktable_table = document.getElementById('tasktable_table');
+
+                // Set correct table header width
+                $taskHeader.style.width = $tasktable_table.rows[0].cells[0].offsetWidth + "px";
+                $assigneeHeader.style.width = $tasktable_table.rows[0].cells[1].offsetWidth + "px";
+
                 setInterval(function() {
                     $tasktablediv.load('/index.php?tasks #tasktable');
                 }, interval * 1000);
@@ -175,7 +194,7 @@ exit(0);
     <script type='text/javascript'>
 		// Refresh time for the date function
         function display_c() {
-            const refresh = 1000;
+            const refresh = 1000 * 60 * 30;
             setTimeout(display_ct, refresh);
         }
 

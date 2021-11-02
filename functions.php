@@ -260,13 +260,7 @@ function print_tasktable()
     ?>
     <div id='tasktable'>
 <!--        <h5 class='text-center'>Tasklist --><?//= "page $page of $pages" ?><!--</h5>-->
-        <table class='table table-striped' style='margin: 0 auto;'>
-            <thead class="thead-dark">
-            <tr>
-                <th>Task</th>
-                <th>Assignee</th>
-            </tr>
-            </thead>
+        <table id="tasktable_table" class='table table-striped' style='margin: 0 auto;'>
             <tbody>
             <?php
             foreach ($tasks as $task) {
