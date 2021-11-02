@@ -213,13 +213,14 @@ function print_tasktable()
     foreach($stacks as $stack) {
         // TODO: parse it all...
         $cards = $stack['cards'];
+        $timezone = new DateTimeZone('Europe/Rome');
         foreach ($cards as $card){
             $task = [];
             $labels = $card['labels'];
             $assigned_users = $card['assignedUsers'];
             $task['title'] = $card['title'];
             $task['description'] = $card['description'];
-            $task['duedate'] = $card["duedate"];
+            $task['duedate'] = $card["duedate"] === null?null:new DateTime($card["duedate"], $timezone);
             $task['createdate'] = $card["createdAt"];
             $task['labels'] = [];
             $task['assignee'] = [];
@@ -260,41 +261,45 @@ function print_tasktable()
     <div id='tasktable'>
         <h5 class='text-center'>Tasklist <?= "page $page of $pages" ?></h5>
         <table class='table table-striped' style='margin: 0 auto;'>
-            <thead>
+            <thead class="thead-dark">
             <tr>
-                <th>Title</th>
-<!--                <th>Description</th>-->
-<!--                <th>Due Date</th>-->
-                <th>Labels</th>
+                <th>Task</th>
                 <th>Assignee</th>
             </tr>
             </thead>
             <tbody>
             <?php
             foreach ($tasks as $task) {
+                // Add title with description and tags
                 echo '<tr>';
-                echo '<td>' . htmlspecialchars($task['title']) . '</td>';
-                //echo '<td>' . htmlspecialchars($task['description']) .'</td>';
-                //echo '<td>' . htmlspecialchars($task['duedate']) . '</td>';
-                echo '<td>';
+                echo '<td style="vertical-align: middle;">';
+                echo htmlspecialchars($task['title']) . '<br>';
+                if ($task['duedate'] != null) {
+                    echo '<span class="duedate">Due by ' . htmlspecialchars($task['duedate']->format('d-m-Y')) . '</span> - ';
+                }
+                if ($task['description'] != null) {
+                    echo '<small class="text-muted">' . htmlspecialchars($task['description']) . '</small><br>';
+                }
+                echo '<div class="labels-container">';
                 foreach ($task['labels'] as $label){
-                    echo "<span style=\"background-color: #{$label['color']};";
+                    echo '<span class="label" style="';
+                    echo "background: #{$label['color']};";
                     if (get_brightness($label['color']) < 149){
                         echo "color: white;";
                     } else {
                         echo "color: black;";
                     }
-                    echo "padding: 5px;";
-                    echo "margin: 5px;";
-//                    echo "border: 2px solid grey;";
-                    echo "border-radius: 10px;";
-                    echo "box-shadow: 2px 2px 5px 1px #333333;";
-                    echo "\">";
+                    echo '">';
                     echo htmlspecialchars($label['title']);
                     echo "</span>";
                 }
                 echo '</td>';
-                echo '<td>' . implode(', ', $task['assignee']) . '</td>';
+                echo '<td class="text-center assignee">';
+                foreach ($task['assignee'] as $assignee) {
+                    echo '<span>' . $assignee;
+                    echo '</span><br>';
+                }
+                echo '</td>';
                 echo '</tr>';
             }
             ?>

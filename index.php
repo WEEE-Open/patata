@@ -11,28 +11,29 @@ if (isset($_GET['quote'])) {
     ?>
 <!DOCTYPE html>
 <html lang='en'>
+    <head>
+        <title>Stat iStiche™ (<?= htmlspecialchars($_GET['stats']) ?>)</title>
+    </head>
 
-<head>
-    <title>Stat iStiche™ (<?= htmlspecialchars($_GET['stats']) ?>)</title>
-</head>
+    <body>
+        <?php print_stats($_GET['stats']) ?>
+    </body>
+</html>
 
-<body>
-    <?php print_stats($_GET['stats']) ?>
-</body>
 <?php
     exit(0);
 } else if (isset($_GET['tasks'])) {
     ?>
 <!DOCTYPE html>
 <html lang='en'>
+    <head>
+        <title>Patatasks™</title>
+    </head>
 
-<head>
-    <title>Patatasks™</title>
-</head>
-
-<body>
-    <?php print_tasktable() ?>
-</body>
+    <body>
+        <?php print_tasktable() ?>
+    </body>
+</html>
 <?php
 exit(0);
 }
@@ -52,12 +53,29 @@ exit(0);
         * {
             font-family: 'Noto Sans', sans-serif;
         }
+        .labels-container {
+            padding-top: 5px;
+        }
+        .label {
+            padding: 2px 10px 2px 10px;
+            margin-right: 10px;
+            border-radius: 20px;
+
+        }
+        .assignee {
+            border-left: solid lightgrey 1px;
+        }
+        .duedate {
+            color: darkred;
+        }
+        .darkTheme .label {
+        }
+
     </style>
 </head>
 
-<body onload="display_ct(); auto_update_qt(); auto_switch_theme()">
+<body onload="display_ct();  auto_update_qt();  auto_switch_theme()">
     <div class="container">
-
         <div class='row'>
             <div class='col-md-6'>
                 <div id='ct' style='padding-left: 30px;margin-left: 0;'></div>
@@ -71,7 +89,7 @@ exit(0);
                 /**
                  * Update quotes every N seconds
                  */
-                const refresh_timer = 1000 * 60 * 30;
+                const refresh_timer = 1000 * 60;
 
                 function auto_update_qt() {
                     fetch('?quote')
@@ -83,6 +101,11 @@ exit(0);
 				let theme = document.getElementById('darktheme');
 				function auto_switch_theme() {
 					theme.disabled = !theme.disabled;
+                    if (theme.disabled){
+                        document.body.classList.remove("darkTheme");
+                    } else {
+                        document.body.classList.add("darkTheme");
+                    }
 					setTimeout(auto_switch_theme, refresh_timer);
 				}
 
