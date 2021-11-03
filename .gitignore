@@ -1,6 +1,6 @@
-patabase.db
 .phpintel
 .vscode/launch.json
 .idea/
 quotes.json
 conf.php
+stacks_cache.json

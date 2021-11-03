@@ -1,5 +1,4 @@
 <?php
-include 'db.php';
 include 'functions.php';
 session_start();
 
@@ -12,28 +11,29 @@ if (isset($_GET['quote'])) {
     ?>
 <!DOCTYPE html>
 <html lang='en'>
+    <head>
+        <title>Stat iStiche™ (<?= htmlspecialchars($_GET['stats']) ?>)</title>
+    </head>
 
-<head>
-    <title>Stat iStiche™ (<?= htmlspecialchars($_GET['stats']) ?>)</title>
-</head>
+    <body>
+        <?php print_stats($_GET['stats']) ?>
+    </body>
+</html>
 
-<body>
-    <?php print_stats($_GET['stats']) ?>
-</body>
 <?php
     exit(0);
 } else if (isset($_GET['tasks'])) {
     ?>
 <!DOCTYPE html>
 <html lang='en'>
+    <head>
+        <title>Patatasks™</title>
+    </head>
 
-<head>
-    <title>Patatasks™</title>
-</head>
-
-<body>
-    <?php print_tasktable() ?>
-</body>
+    <body>
+        <?php print_tasktable() ?>
+    </body>
+</html>
 <?php
 exit(0);
 }
@@ -53,13 +53,30 @@ exit(0);
         * {
             font-family: 'Noto Sans', sans-serif;
         }
+        .labels-container {
+            padding-top: 5px;
+        }
+        .label {
+            padding: 2px 10px 2px 10px;
+            margin-right: 10px;
+            border-radius: 20px;
+
+        }
+        .assignee {
+            border-left: solid lightgrey 1px;
+        }
+        .duedate {
+            color: darkred;
+        }
+        .darkTheme .label {
+        }
+
     </style>
 </head>
 
-<body onload="display_ct(); auto_update_qt(); auto_switch_theme()">
-    <div class="container">
-
-        <div class='row'>
+<body onload="display_ct();  auto_update_qt();  auto_switch_theme()">
+    <div class="container d-flex flex-column" style="height: 100vh;">
+        <div class='row' style="flex-shrink: 1;">
             <div class='col-md-6'>
                 <div id='ct' style='padding-left: 30px;margin-left: 0;'></div>
                 <div id='ct2' style='padding-left: 30px;'></div>
@@ -72,7 +89,7 @@ exit(0);
                 /**
                  * Update quotes every N seconds
                  */
-                const refresh_timer = 1000 * 60 * 30;
+                const refresh_timer = 1000 * 60;
 
                 function auto_update_qt() {
                     fetch('?quote')
@@ -84,6 +101,11 @@ exit(0);
 				let theme = document.getElementById('darktheme');
 				function auto_switch_theme() {
 					theme.disabled = !theme.disabled;
+                    if (theme.disabled){
+                        document.body.classList.remove("darkTheme");
+                    } else {
+                        document.body.classList.add("darkTheme");
+                    }
 					setTimeout(auto_switch_theme, refresh_timer);
 				}
 
@@ -103,7 +125,18 @@ exit(0);
 
         <hr style='margin-left: 30px;margin-right: 30px;'>
 
-        <div id="tasktablediv">
+        <div id='tasktableheader'>
+            <table class='table table-striped' style='margin: 0 auto;'>
+                <thead class="thead-dark">
+                <tr>
+                    <th id="taskHead">Task</th>
+                    <th id="assigneeHead">Assignee</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+
+        <div id="tasktablediv" style="flex-shrink: 1; overflow: hidden;">
             <?php print_tasktable() ?>
         </div>
 
@@ -111,16 +144,33 @@ exit(0);
             (function() {
                 // Reload task table every N seconds
                 let interval = 10;
-                let $tasktable = $('#tasktablediv');
+                let $tasktablediv = $('#tasktablediv');
+                let $tasktable =  document.getElementById('tasktable');
+                let $taskHeader = document.getElementById('taskHead');
+                let $assigneeHeader = document.getElementById('assigneeHead');
+                let $tasktable_table = document.getElementById('tasktable_table');
+
+                // Set correct table header width
+                $taskHeader.style.width = $tasktable_table.rows[0].cells[0].offsetWidth + "px";
+                $assigneeHeader.style.width = $tasktable_table.rows[0].cells[1].offsetWidth + "px";
+
                 setInterval(function() {
-                    $tasktable.load('/index.php?tasks #tasktable');
+                    $tasktablediv.load('/index.php?tasks #tasktable');
                 }, interval * 1000);
+                // Autoscroll table
+                setInterval(function () {
+                    let $duration = $tasktable.clientHeight * 15;
+                    $tasktablediv.animate({scrollTop: 0}, 800);
+                    $tasktablediv.animate({scrollTop: 0}, 2000);
+                    $tasktablediv.animate({scrollTop: $tasktable.clientHeight}, $duration, "linear");
+                })
             }());
+
         </script>
 
         <hr>
 
-        <div id="statsdiv">
+        <div id="statsdiv" style="flex-grow: 1;">
             <?php print_stats('0') ?>
         </div>
 
@@ -144,7 +194,7 @@ exit(0);
     <script type='text/javascript'>
 		// Refresh time for the date function
         function display_c() {
-            const refresh = 1000;
+            const refresh = 1000 * 60 * 30;
             setTimeout(display_ct, refresh);
         }
 
