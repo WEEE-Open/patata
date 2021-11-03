@@ -269,12 +269,12 @@ function print_tasktable()
                 // Add title with description and tags
                 echo '<tr>';
                 echo '<td style="vertical-align: middle;">';
-                echo htmlspecialchars($task['title']) . '<br>';
+                echo ucfirst(htmlspecialchars($task['title']) . '<br>');
                 if ($task['duedate'] != null) {
                     echo '<span class="duedate">Due by ' . htmlspecialchars($task['duedate']->format('d-m-Y')) . '</span> - ';
                 }
                 if ($task['description'] != null) {
-                    echo '<small class="text-muted">' . htmlspecialchars($task['description']) . '</small><br>';
+                    echo '<small class="text-muted">' . ucfirst(htmlspecialchars($task['description'])) . '</small><br>';
                 }
                 echo '<div class="labels-container">';
                 foreach ($task['labels'] as $label){
