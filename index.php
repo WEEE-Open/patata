@@ -85,6 +85,40 @@ exit(0);
                 <div id='quotesbox' class='text-right' style='margin-right: 0;padding-right: 30px;'></div>
                 <div id='authorbox' class='text-right' style='margin-right: 0;padding-right: 30px;'></div>
             </div>
+
+            <script type='text/javascript'>
+                // Refresh time for the date function
+                function display_c() {
+                    const refresh = 1000 * 60 * 30;
+                    setTimeout(display_ct, refresh);
+                }
+
+                function addZero(i) {
+                    if (i < 10) {
+                        i = '0' + i;
+                    }
+                    return i;
+                }
+
+                function display_ct() { //Date generator function
+                    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                    let x = new Date();
+                    let d = addZero(x.getDate());
+                    let mo = months[x.getMonth()];
+                    let y = addZero(x.getFullYear());
+                    let h = addZero(x.getHours());
+                    let mi = addZero(x.getMinutes());
+                    let s = addZero(x.getSeconds());
+                    const wd = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    let td = wd[x.getDay()];
+                    let x1 = td + ' - ' + d + ' ' + mo + ' ' + y;
+                    let x2 = h + ':' + mi + ':' + s;
+                    document.getElementById('ct').textContent = x1;
+                    document.getElementById('ct2').textContent = x2;
+
+                    display_c();
+                }
+            </script>
             <script>
                 /**
                  * Update quotes every N seconds
@@ -123,10 +157,10 @@ exit(0);
             </script>
         </div>
 
-        <hr style='margin-left: 30px;margin-right: 30px;'>
+<!--        <hr style='margin-left: 30px;margin-right: 30px;'>-->
 
-        <div id='tasktableheader'>
-            <table class='table table-striped' style='margin: 0 auto;'>
+        <div id="tasktableheader" class="mt-2">
+            <table class="table table-striped my-0 mx-auto">
                 <thead class="thead-dark">
                 <tr>
                     <th id="taskHead">Task</th>
@@ -190,40 +224,6 @@ exit(0);
             }());
         </script>
     </div>
-
-    <script type='text/javascript'>
-		// Refresh time for the date function
-        function display_c() {
-            const refresh = 1000 * 60 * 30;
-            setTimeout(display_ct, refresh);
-        }
-
-        function addZero(i) {
-            if (i < 10) {
-                i = '0' + i;
-            }
-            return i;
-        }
-
-        function display_ct() { //Date generator function
-			const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-			let x = new Date();
-			let d = addZero(x.getDate());
-			let mo = months[x.getMonth()];
-            let y = addZero(x.getFullYear());
-            let h = addZero(x.getHours());
-            let mi = addZero(x.getMinutes());
-            let s = addZero(x.getSeconds());
-            const wd = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            let td = wd[x.getDay()];
-            let x1 = td + ' - ' + d + ' ' + mo + ' ' + y;
-            let x2 = h + ':' + mi + ':' + s;
-            document.getElementById('ct').textContent = x1;
-            document.getElementById('ct2').textContent = x2;
-
-            display_c();
-        }
-    </script>
 </body>
 
 </html> 
