@@ -68,8 +68,8 @@ exit(0);
         .duedate {
             color: darkred;
         }
-        .darkTheme .label {
-        }
+        /*.darkTheme .label {*/
+        /*}*/
 
     </style>
 </head>
@@ -121,9 +121,9 @@ exit(0);
             </script>
             <script>
                 /**
-                 * Update quotes every N seconds
+                 * Update quotes and dark theme every N seconds
                  */
-                const refresh_timer = 1000 * 60;
+                const refresh_timer = 60 * 60;
 
                 function auto_update_qt() {
                     fetch('?quote')
@@ -140,7 +140,7 @@ exit(0);
                     } else {
                         document.body.classList.add("darkTheme");
                     }
-					setTimeout(auto_switch_theme, refresh_timer);
+					setTimeout(auto_switch_theme, refresh_timer * 1000);
 				}
 
                 /**
@@ -177,7 +177,7 @@ exit(0);
         <script type='text/javascript'>
             (function() {
                 // Reload task table every N seconds
-                let interval = 10;
+                let interval = 60 * 60;
                 let $tasktablediv = $('#tasktablediv');
                 let $tasktable =  document.getElementById('tasktable');
                 let $taskHeader = document.getElementById('taskHead');

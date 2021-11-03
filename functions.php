@@ -162,9 +162,11 @@ function get_curl()
 
 function download_tasks(): array
 {
-    // TODO: check cache before downloading
+    // TODO: use etag/If-Modified-Since instead
     if(file_exists(CACHE_FILE)) {
-        return json_decode(file_get_contents(CACHE_FILE), true);
+        if(time() - filemtime(CACHE_FILE) >= 60 * 60 * 1) { // 1 hour
+            return json_decode(file_get_contents(CACHE_FILE), true);
+        }
     }
     
     $request = deck_request(DECK_URL . "/apps/deck/api/v1.0/boards/" . DECK_BOARD . "/stacks"); //. "/stacks/" . $stack);
