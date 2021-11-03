@@ -89,7 +89,7 @@ exit(0);
             <script type='text/javascript'>
                 // Refresh time for the date function
                 function display_c() {
-                    const refresh = 1000 * 60 * 30;
+                    const refresh = 1000;
                     setTimeout(display_ct, refresh);
                 }
 
@@ -129,7 +129,7 @@ exit(0);
                     fetch('?quote')
                         .then(response => response.json())
                         .then(json => display_qt(json))
-                        .then(() => setTimeout(auto_update_qt, refresh_timer));
+                        .then(() => setTimeout(auto_update_qt, refresh_timer * 1000));
                 }
 
 				let theme = document.getElementById('darktheme');
