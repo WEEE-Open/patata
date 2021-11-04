@@ -175,30 +175,28 @@ exit(0);
         </div>
 
         <script type='text/javascript'>
-            (function() {
-                // Reload task table every N seconds
-                let interval = 60 * 60;
-                let $tasktablediv = $('#tasktablediv');
-                let $tasktable =  document.getElementById('tasktable');
-                let $taskHeader = document.getElementById('taskHead');
-                let $assigneeHeader = document.getElementById('assigneeHead');
-                let $tasktable_table = document.getElementById('tasktable_table');
+            let interval = 60 * 60;
+            let $tasktablediv = $('#tasktablediv');
+            let $tasktable =  document.getElementById('tasktable');
+            let $taskHeader = document.getElementById('taskHead');
+            let $assigneeHeader = document.getElementById('assigneeHead');
+            let $tasktable_table = document.getElementById('tasktable_table');
 
-                // Set correct table header width
-                $taskHeader.style.width = $tasktable_table.rows[0].cells[0].offsetWidth + "px";
-                $assigneeHeader.style.width = $tasktable_table.rows[0].cells[1].offsetWidth + "px";
+            // Define tasktable autoscroll function
+            function autoscroll() {
+                let $duration = $tasktable.clientHeight * 15;
+                $tasktablediv.animate({scrollTop: 0}, 800);
+                $tasktablediv.animate({scrollTop: 0}, 2000);
+                $tasktablediv.animate({scrollTop: $tasktable.clientHeight}, $duration, "linear");
+            }
 
-                setInterval(function() {
-                    $tasktablediv.load('/index.php?tasks #tasktable');
-                }, interval * 1000);
-                // Autoscroll table
-                setInterval(function () {
-                    let $duration = $tasktable.clientHeight * 15;
-                    $tasktablediv.animate({scrollTop: 0}, 800);
-                    $tasktablediv.animate({scrollTop: 0}, 2000);
-                    $tasktablediv.animate({scrollTop: $tasktable.clientHeight}, $duration, "linear");
-                })
-            }());
+            // Define tasktable task update function
+            function update_tasks(){
+                $tasktablediv.load('/index.php?tasks #tasktable');
+            }
+
+            setInterval(update_tasks, interval * 1000);
+            setInterval(autoscroll);
 
         </script>
 
