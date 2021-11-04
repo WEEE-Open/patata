@@ -182,22 +182,20 @@ exit(0);
             let $assigneeHeader = document.getElementById('assigneeHead');
             let $tasktable_table = document.getElementById('tasktable_table');
 
-            // Define tasktable autoscroll function
-            function autoscroll() {
-                let $duration = $tasktable.clientHeight * 15;
-                $tasktablediv.animate({scrollTop: 0}, 800);
-                $tasktablediv.animate({scrollTop: 0}, 2000);
-                $tasktablediv.animate({scrollTop: $tasktable.clientHeight}, $duration, "linear");
-            }
-
             // Define tasktable task update function
-            function update_tasks(){
+            setInterval(function() {
                 $tasktablediv.load('/index.php?tasks #tasktable');
-            }
+            }, interval * 1000);
 
-            setInterval(update_tasks, interval * 1000);
-            setInterval(autoscroll);
-
+            // Define tasktable autoscroll function
+            (async function autoscroll() {
+                while(true) {
+                    let duration = $tasktable.clientHeight * 15;
+                    await $tasktablediv.animate({scrollTop: 0}, 800).promise();
+                    await $tasktablediv.animate({scrollTop: 0}, 2000).promise();
+                    await $tasktablediv.animate({scrollTop: $tasktable.clientHeight}, duration, "linear");
+                }
+            })();
         </script>
 
         <hr>
