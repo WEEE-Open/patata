@@ -309,6 +309,14 @@ function print_stat($curl, string $stat)
             $url = '/v2/stats/getCountByFeature/ram-type/working=yes/rambox';
             $title = 'RAMs available';
             break;
+        case 'latest_mod':
+            $url = '/v2/stats/getRecentAuditByType/U/5';
+            $title = 'Recently modified items';
+            break;
+        case 'latest_creation':
+            $url = '/v2/stats/getRecentAuditByType/C/5';
+            $title = 'Recently modified items';
+            break;
         default:
             echo 'print_stat error: no such case.';
     }
@@ -320,7 +328,7 @@ function print_stat($curl, string $stat)
     } else {
         $datas = get_data_from_tarallo($curl, $url);
         $data = [];
-        foreach ($datas as $key => $entry){
+        foreach ($datas as $key => $entry) {
             $data[strtoupper($key)] = $entry;
         }
     }
@@ -342,6 +350,7 @@ function print_stat($curl, string $stat)
             </thead>
             <tbody>
             <?php foreach ($data as $key => $array): ?>
+            <?php if ($title == 'CPUs available'): ?>
             <?php foreach ($array as $entry_key => $entry): ?>
                 <tr>
                     <td><?= e($key) ?></td>
@@ -349,6 +358,12 @@ function print_stat($curl, string $stat)
                     <td><?= e($entry) ?></td>
                 </tr>
             <?php endforeach;?>
+            <?php else: ?>
+                    <tr>
+                        <td><?= e($key) ?></td>
+                        <td><?= e($array) ?></td>
+                    </tr>
+            <?php endif; ?>
             <?php endforeach;?>
             </tbody>
         </table>

@@ -131,7 +131,7 @@ exit(0);
                 /**
                  * Update quotes and dark theme every N seconds
                  */
-                const refresh_timer = 10;
+                const refresh_timer = 60 * 60;
 
                 function auto_update_qt() {
                     fetch('?quote')
