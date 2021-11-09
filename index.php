@@ -39,7 +39,7 @@ exit(0);
 }
 ?>
 <!DOCTYPE html>
-<html lang='en'>
+<html lang='it'>
 
 <head>
 	<title>Patata</title>
@@ -48,6 +48,7 @@ exit(0);
     <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
 	<script src="jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 	<script src="bootstrap.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
 	<link rel="stylesheet" id="darktheme" type="text/css" href="bootstrap-dark.min.css" />
     <style>
         * {
@@ -70,13 +71,15 @@ exit(0);
         }
         /*.darkTheme .label {*/
         /*}*/
-
+        .tableHeader {
+            padding: 2px 0px 2px 10px !important;
+        }
     </style>
 </head>
 
 <body onload="display_ct();  auto_update_qt();  auto_switch_theme()">
     <div class="container d-flex flex-column" style="height: 100vh;">
-        <div class='row' style="flex-shrink: 1;">
+        <div id="datequoterow" class='row' style="flex-shrink: 1;">
             <div class='col-md-6'>
                 <div id='ct' style='padding-left: 30px;margin-left: 0;'></div>
                 <div id='ct2' style='padding-left: 30px;'></div>
@@ -157,20 +160,18 @@ exit(0);
             </script>
         </div>
 
-<!--        <hr style='margin-left: 30px;margin-right: 30px;'>-->
-
         <div id="tasktableheader" class="mt-2">
             <table class="table table-striped my-0 mx-auto">
                 <thead class="thead-dark">
                 <tr>
-                    <th id="taskHead">Task</th>
-                    <th id="assigneeHead">Assignee</th>
+                    <th class="tableHeader" id="taskHead">Task</th>
+                    <th class="tableHeader" id="assigneeHead">Assignee</th>
                 </tr>
                 </thead>
             </table>
         </div>
 
-        <div id="tasktablediv" style="flex-shrink: 1; overflow: hidden;">
+        <div id="tasktablediv" style="height: 60%; overflow: hidden;">
             <?php print_tasktable() ?>
         </div>
 
@@ -181,6 +182,10 @@ exit(0);
             let $taskHeader = document.getElementById('taskHead');
             let $assigneeHeader = document.getElementById('assigneeHead');
             let $tasktable_table = document.getElementById('tasktable_table');
+
+            // Set correct table header width
+            $taskHeader.style.width = $tasktable_table.rows[0].cells[0].offsetWidth + "px";
+            $assigneeHeader.style.width = $tasktable_table.rows[0].cells[1].offsetWidth + "px";
 
             // Define tasktable task update function
             setInterval(function() {
@@ -200,7 +205,7 @@ exit(0);
 
         <hr>
 
-        <div id="statsdiv" style="flex-grow: 1;">
+        <div id="statsdiv" style="height: 40%; overflow: hidden;">
             <?php print_stats('0') ?>
         </div>
 
@@ -219,6 +224,15 @@ exit(0);
                 }, interval * 1000);
             }());
         </script>
+
+        <hr>
+
+        <div id="socialstatsdiv">
+            <h6 class='text-center'>Social stats</h6>
+            <div class="text-center">
+            <?php print_social_stats() ?>
+            </div>
+        </div>
     </div>
 </body>
 
