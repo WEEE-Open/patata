@@ -195,7 +195,8 @@ exit(0);
             // Define tasktable autoscroll function
             (async function autoscroll() {
                 while(true) {
-                    let duration = $tasktable.clientHeight * 15;
+                    let velocity = 30
+                    let duration = $tasktable.clientHeight * velocity;
                     await $tasktablediv.animate({scrollTop: 0}, 800).promise();
                     await $tasktablediv.animate({scrollTop: 0}, 2000).promise();
                     await $tasktablediv.animate({scrollTop: $tasktable.clientHeight}, duration, "linear").promise();
