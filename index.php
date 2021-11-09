@@ -69,10 +69,15 @@ exit(0);
         .duedate {
             color: darkred;
         }
-        /*.darkTheme .label {*/
-        /*}*/
         .tableHeader {
             padding: 2px 0px 2px 10px !important;
+        }
+
+        .darkTheme .text-muted {
+            color: #c4c4c4 !important;
+        }
+        .darkTheme .duedate {
+            color: red !important;
         }
     </style>
 </head>
@@ -126,7 +131,7 @@ exit(0);
                 /**
                  * Update quotes and dark theme every N seconds
                  */
-                const refresh_timer = 60 * 60;
+                const refresh_timer = 10;
 
                 function auto_update_qt() {
                     fetch('?quote')

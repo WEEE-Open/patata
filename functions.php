@@ -90,7 +90,16 @@ function print_social_stat($case)
                 '&fields=items/statistics/subscriberCount&key=' . YOUTUBE_API_KEY;
             $result = file_get_contents($url);
             $result = json_decode($result, true);
-            $result = '<div class="col-12 align-middle"><i class="fa fa-youtube-play" style="vertical-align: middle; font-size: 1.5rem; color: red;"></i><span class="pl-1" style="font-size: 1rem; vertical-align: middle;">' . $result['items'][0]['statistics']['subscriberCount'] . '</span></div>';
+            $result = '<div class="col-12 align-middle">'.
+                '<i class="fa fa-youtube-play" style="vertical-align: middle; font-size: 1.5rem; color: red;"></i>'.
+                '<span class="pl-1" style="font-size: 1rem; vertical-align: middle;">' .
+                $result['items'][0]['statistics']['subscriberCount'] . '</span></div>';
+            break;
+        case 'facebook':
+            echo 'facebook_stats';
+            break;
+        case 'instagram':
+            echo 'instagram_stats';
             break;
         default:
             echo 'lol';
