@@ -86,14 +86,29 @@ function print_social_stat($case)
 {
     switch ($case) {
         case 'youtube':
-            $url = 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' . YOUTUBE_CHANNEL_ID .
-                '&fields=items/statistics/subscriberCount&key=' . YOUTUBE_API_KEY;
-            $result = file_get_contents($url);
-            $result = json_decode($result, true);
+            $urls = ['subs' => 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' . YOUTUBE_CHANNEL_ID .
+                '&fields=items/statistics/subscriberCount&key=' . YOUTUBE_API_KEY ,
+                'views' => 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' . YOUTUBE_CHANNEL_ID .
+                '&fields=items/statistics/viewCount&key=' . YOUTUBE_API_KEY];
             $result = '<div class="col-12 align-middle">'.
-                '<i class="fa fa-youtube-play" style="vertical-align: middle; font-size: 1.5rem; color: red;"></i>'.
-                '<span class="pl-1" style="font-size: 1rem; vertical-align: middle;">' .
-                $result['items'][0]['statistics']['subscriberCount'] . '</span></div>';
+                '<i class="fa fa-youtube-play" style="vertical-align: middle; font-size: 1.5rem; color: red;"></i>';
+            foreach ($urls as $key => $url){
+                $query = file_get_contents($url);
+                $query = json_decode($query, true);
+                if ($key == 'subs'){
+                    $query = $query['items'][0]['statistics']['subscriberCount'];
+                    $result .= '<i class="pl-1 fa fa-user" style="vertical-align: middle; font-size: 1rem; color: grey;"></i>'.
+                        '<span class="pl-1" style="font-size: 1rem; vertical-align: middle;">' .
+                        $query . '</span>';
+                } else {
+                    $query = $query['items'][0]['statistics']['viewCount'];
+                    $result .= '<i class="pl-1 fa fa-eye" style="vertical-align: middle; font-size: 1rem; color: grey;"></i>'.
+                        '<span class="pl-1" style="font-size: 1rem; vertical-align: middle;">' .
+                        $query . '</span>';
+                }
+
+            }
+            $result .= '</div>';
             break;
         case 'facebook':
             echo 'facebook_stats';
