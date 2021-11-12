@@ -180,31 +180,40 @@ exit(0);
             <?php print_tasktable() ?>
         </div>
 
+        <!--suppress InfiniteLoopJS -->
         <script type='text/javascript'>
             let interval = 60 * 60;
             let $tasktablediv = $('#tasktablediv');
-            let $tasktable =  document.getElementById('tasktable');
-            let $taskHeader = document.getElementById('taskHead');
-            let $assigneeHeader = document.getElementById('assigneeHead');
-            let $tasktable_table = document.getElementById('tasktable_table');
+            let tasktable =  document.getElementById('tasktable');
+            let taskHeader = document.getElementById('taskHead');
+            let assigneeHeader = document.getElementById('assigneeHead');
+            let tasktable_table = document.getElementById('tasktable_table');
 
             // Set correct table header width
-            $taskHeader.style.width = $tasktable_table.rows[0].cells[0].offsetWidth + "px";
-            $assigneeHeader.style.width = $tasktable_table.rows[0].cells[1].offsetWidth + "px";
-
-            // Define tasktable task update function
-            setInterval(function() {
-                $tasktablediv.load('/index.php?tasks #tasktable');
-            }, interval * 1000);
+            taskHeader.style.width = tasktable_table.rows[0].cells[0].offsetWidth + "px";
+            assigneeHeader.style.width = tasktable_table.rows[0].cells[1].offsetWidth + "px";
 
             // Define tasktable autoscroll function
             (async function autoscroll() {
+                let count = 0;
+                let velocity = 30;
+                let scroll_to_update = 10;
+                let tableHeight = tasktable.clientHeight;
+                let duration = tableHeight * velocity;
                 while(true) {
-                    let velocity = 30
-                    let duration = $tasktable.clientHeight * velocity;
                     await $tasktablediv.animate({scrollTop: 0}, 800).promise();
                     await $tasktablediv.animate({scrollTop: 0}, 2000).promise();
-                    await $tasktablediv.animate({scrollTop: $tasktable.clientHeight}, duration, "linear").promise();
+                    await $tasktablediv.animate({scrollTop: tableHeight}, duration, "linear").promise();
+                    count ++;
+                    if (count === scroll_to_update){
+                        count = 0;
+                        // Reload and update task table with new data
+                        await $tasktablediv.load('/index.php?tasks #tasktable').promise();
+                        tasktable =  document.getElementById('tasktable');
+                        tasktable_table = document.getElementById('tasktable_table');
+                        tableHeight = tasktable.clientHeight;
+                        duration = tasktable.clientHeight * velocity;
+                    }
                 }
             })();
         </script>
