@@ -2,6 +2,7 @@
 
 require_once 'conf.php';
 
+
 const TYPE_EMOJI = [
     'E' => '💡',
     'I' => '💻',
@@ -22,8 +23,8 @@ const TYPE_DESCRIPTION = [
     'R' => 'Retrocomputing',
     'S' => 'Svago',
 ];
-
 const CACHE_FILE = 'stacks_cache.json';
+
 
 function deck_request(string $url): string {
     $ch = curl_init($url);
@@ -52,17 +53,65 @@ function print_stats(string $stats)
     $curl = get_curl();
 
     echo '<div class="row" id="stats">';
-    if ($stats === '0') {
-        print_stat($curl, 'add');
-        print_stat($curl, 'update');
-    } else {
-        print_stat($curl, 'update');
-        print_stat($curl, 'move');
-    }
+    print_stat($curl,'cpu');
+    print_stat($curl,'ram');
     echo '</div>';
 
     curl_close($curl);
 }
+
+
+function print_social_stats(){
+    require_once 'conf.php';
+
+    $socials = ['youtube'];
+
+    foreach ($socials as $social){
+        echo print_social_stat($social);
+    }
+
+}
+
+function print_social_stat($case)
+{
+    switch ($case) {
+        case 'youtube':
+            $urls = ['subs' => 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' . YOUTUBE_CHANNEL_ID .
+                '&fields=items/statistics/subscriberCount&key=' . YOUTUBE_API_KEY ,
+                'views' => 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' . YOUTUBE_CHANNEL_ID .
+                '&fields=items/statistics/viewCount&key=' . YOUTUBE_API_KEY];
+            $result = '<div class="col-12 align-middle">'.
+                '<i class="fa fa-youtube-play" style="vertical-align: middle; font-size: 1.5rem; color: red;"></i>';
+            foreach ($urls as $key => $url){
+                $query = file_get_contents($url);
+                $query = json_decode($query, true);
+                if ($key == 'subs'){
+                    $query = $query['items'][0]['statistics']['subscriberCount'];
+                    $result .= '<i class="pl-1 fa fa-user" style="vertical-align: middle; font-size: 1rem; color: grey;"></i>'.
+                        '<span class="pl-1" style="font-size: 1rem; vertical-align: middle;">' .
+                        $query . '</span>';
+                } else {
+                    $query = $query['items'][0]['statistics']['viewCount'];
+                    $result .= '<i class="pl-1 fa fa-eye" style="vertical-align: middle; font-size: 1rem; color: grey;"></i>'.
+                        '<span class="pl-1" style="font-size: 1rem; vertical-align: middle;">' .
+                        $query . '</span>';
+                }
+
+            }
+            $result .= '</div>';
+            break;
+        case 'facebook':
+            echo 'facebook_stats';
+            break;
+        case 'instagram':
+            echo 'instagram_stats';
+            break;
+        default:
+            echo 'lol';
+    }
+    return $result;
+}
+
 
 function relative_date($time)
 {
@@ -76,52 +125,12 @@ function relative_date($time)
     }
 }
 
+
 function e($text)
 {
     return htmlspecialchars($text, ENT_QUOTES | ENT_HTML5);
 }
 
-function print_stat($curl, string $stat)
-{
-    switch ($stat) {
-        case 'add':
-        default:
-            $url = '/v2/stats/getRecentAuditByType/C/5';
-            $title = 'Recently added items';
-            break;
-        case 'update':
-            $url = '/v2/stats/getRecentAuditByType/U/5';
-            $title = 'Recently modified items';
-            break;
-        case 'move':
-            $url = '/v2/stats/getRecentAuditByType/M/5';
-            $title = 'Recently moved items';
-            break;
-    }
-
-    $data = get_data_from_tarallo($curl, $url);
-    ?>
-    <div class='col-md-6'>
-        <h6 class='text-center'><?= e($title) ?></h6>
-        <table class='table table-striped table-sm text-center'>
-            <thead style="position: sticky; top: 0;">
-            <tr>
-                <th>Item</th>
-                <th>Time</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($data as $item => $timestamp): $timestamp = (int)floatval($timestamp); ?>
-                <tr>
-                    <td><?= e($item) ?></td>
-                    <td><?= relative_date($timestamp) . date(' H:i') ?></td>
-                </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-    <?php
-}
 
 /**
  * @param resource $curl CURL
@@ -129,15 +138,15 @@ function print_stat($curl, string $stat)
  *
  * @return array
  */
-function get_data_from_tarallo($curl, string $path): array
+function get_data_from_tarallo($curl, string $path)
 {
     $url = TARALLO_URL . $path;
     curl_setopt($curl, CURLOPT_URL, $url);
     $result = curl_exec($curl);
     $result = json_decode($result, true);
-
     return $result;
 }
+
 
 /**
  * @return false|resource
@@ -151,6 +160,15 @@ function get_curl()
 
     return $curl;
 }
+
+
+function get_social_curl(){
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    return $curl;
+}
+
 
 function download_tasks(): array
 {
@@ -177,6 +195,7 @@ function download_tasks(): array
     return $stacks_to_display;
 }
 
+
 function get_brightness($hex) {
     // returns brightness value from 0 to 255
     // strip off any leading #
@@ -191,14 +210,6 @@ function get_brightness($hex) {
 function print_tasktable()
 {
     $stacks = download_tasks();
-
-//    echo "<pre style='color: white;'>";
-//    echo json_encode($stacks, JSON_PRETTY_PRINT);
-//    echo "</pre>";
-//    exit(0);
-
-    // ["title" => "Fare cose", "assignee" => null, "tags" => [["Alta priorita'", "#f0f0f0"], ["Lollogne", "#00cccc"], "stack" => "Da fare"]
-    // ["title" => "Riparare roba", "assignee" => "Mario Rossi", "tags" => [["Riparazioni ardite", "#aaaaaa"]], "stack" => "In corso"]
     $tasks = [];
 
     foreach($stacks as $stack) {
@@ -231,13 +242,6 @@ function print_tasktable()
             $tasks[] = $task;
         }
     }
-
-//    echo "<pre style='color: white;'>";
-//    echo json_encode($tasks, JSON_PRETTY_PRINT);
-//    echo "</pre>";
-//    exit(0);
-
-
 
     // TODO: update everything
     $_SESSION['max_row'] = count($tasks);
@@ -288,6 +292,81 @@ function print_tasktable()
                 echo '</tr>';
             }
             ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
+
+
+function print_stat($curl, string $stat)
+{
+    switch ($stat) {
+        case 'cpu':
+            $urls = ['Intel' => '/v2/stats/getCountByFeature/cpu-socket/brand=Intel/box12',
+                'AMD' => '/v2/stats/getCountByFeature/cpu-socket/brand=AMD/box12'];
+            $title = 'CPUs available';
+            break;
+        case 'ram':
+            $url = '/v2/stats/getCountByFeature/ram-type/working=yes/rambox';
+            $title = 'RAMs available';
+            break;
+        case 'latest_mod':
+            $url = '/v2/stats/getRecentAuditByType/U/5';
+            $title = 'Recently modified items';
+            break;
+        case 'latest_creation':
+            $url = '/v2/stats/getRecentAuditByType/C/5';
+            $title = 'Recently modified items';
+            break;
+        default:
+            echo 'print_stat error: no such case.';
+    }
+
+    if ($title == 'CPUs available'){
+        $data = [];
+        $data['Intel'] = get_data_from_tarallo($curl, $urls['Intel']);
+        $data['AMD'] = get_data_from_tarallo($curl, $urls['AMD']);
+    } else {
+        $datas = get_data_from_tarallo($curl, $url);
+        $data = [];
+        foreach ($datas as $key => $entry) {
+            $data[strtoupper($key)] = $entry;
+        }
+    }
+    ?>
+    <div class='col-md-6'>
+        <h6 class='text-center'><?= e($title) ?></h6>
+        <table class='table table-striped table-sm text-center'>
+            <thead style="position: sticky; top: 0;">
+            <tr>
+
+                <?php if ($title == 'CPUs available'): ?>
+                    <th>Brand</th>
+                    <th>Socket</th>
+                <?php else: ?>
+                    <th>Type</th>
+                <?php endif; ?>
+                <th>Qty</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($data as $key => $array): ?>
+            <?php if ($title == 'CPUs available'): ?>
+            <?php foreach ($array as $entry_key => $entry): ?>
+                <tr>
+                    <td><?= e($key) ?></td>
+                    <td><?= e($entry_key) ?></td>
+                    <td><?= e($entry) ?></td>
+                </tr>
+            <?php endforeach;?>
+            <?php else: ?>
+                    <tr>
+                        <td><?= e($key) ?></td>
+                        <td><?= e($array) ?></td>
+                    </tr>
+            <?php endif; ?>
+            <?php endforeach;?>
             </tbody>
         </table>
     </div>

@@ -13,3 +13,7 @@ define('DECK_PASS', 'secret123');
 define('DECK_BOARD', '1337');
 // Deck stacks IDs (if you want to display multiple ones, e.g. To Do, In Progress, ...)
 define('DECK_STACKS', '69,420');
+// Youtube API key to display youtube subscribers and views
+define('YOUTUBE_API_KEY', 'mega49dil231dorz291jn2n3mv8fehe8eshfae817442nf28fh');
+// Youtube channel id: is the last alphanumerical string in the channel link
+define('YOUTUBE_CHANNEL_ID', 'asdlolzirz69cata4lizz2atore0');

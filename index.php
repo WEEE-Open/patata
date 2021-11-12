@@ -34,7 +34,7 @@ exit(0);
 }
 ?>
 <!DOCTYPE html>
-<html lang='en'>
+<html lang='it'>
 
 <head>
 	<title>Patata</title>
@@ -43,6 +43,7 @@ exit(0);
     <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
 	<script src="jquery-3.3.1.min.js"></script>
 	<script src="bootstrap.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
 	<link rel="stylesheet" id="darktheme" type="text/css" href="bootstrap-dark.min.css" />
     <style>
         * {
@@ -63,15 +64,22 @@ exit(0);
         .duedate {
             color: darkred;
         }
-        /*.darkTheme .label {*/
-        /*}*/
+        .tableHeader {
+            padding: 2px 0px 2px 10px !important;
+        }
 
+        .darkTheme .text-muted {
+            color: #c4c4c4 !important;
+        }
+        .darkTheme .duedate {
+            color: red !important;
+        }
     </style>
 </head>
 
 <body onload="displayDate();  auto_update_qt();  auto_switch_theme()">
     <div class="container d-flex flex-column" style="height: 100vh;">
-        <div class='row' style="flex-shrink: 1;">
+        <div id="datequoterow" class='row' style="flex-shrink: 1;">
             <div class='col-md-6'>
                 <div id='currentDate' style='padding-left: 30px;margin-left: 0;'></div>
                 <div id='currentTime' style='padding-left: 30px;'></div>
@@ -140,50 +148,62 @@ exit(0);
             </script>
         </div>
 
-<!--        <hr style='margin-left: 30px;margin-right: 30px;'>-->
-
         <div id="tasktableheader" class="mt-2">
             <table class="table table-striped my-0 mx-auto">
                 <thead class="thead-dark">
                 <tr>
-                    <th id="taskHead">Task</th>
-                    <th id="assigneeHead">Assignee</th>
+                    <th class="tableHeader" id="taskHead">Task</th>
+                    <th class="tableHeader" id="assigneeHead">Assignee</th>
                 </tr>
                 </thead>
             </table>
         </div>
 
-        <div id="tasktablediv" style="flex-shrink: 1; overflow: hidden;">
+        <div id="tasktablediv" style="height: 60%; overflow: hidden;">
             <?php print_tasktable() ?>
         </div>
 
+        <!--suppress InfiniteLoopJS -->
         <script type='text/javascript'>
             let interval = 60 * 60;
             let $tasktablediv = $('#tasktablediv');
-            let $tasktable =  document.getElementById('tasktable');
-            let $taskHeader = document.getElementById('taskHead');
-            let $assigneeHeader = document.getElementById('assigneeHead');
-            let $tasktable_table = document.getElementById('tasktable_table');
+            let tasktable =  document.getElementById('tasktable');
+            let taskHeader = document.getElementById('taskHead');
+            let assigneeHeader = document.getElementById('assigneeHead');
+            let tasktable_table = document.getElementById('tasktable_table');
 
-            // Define tasktable task update function
-            setInterval(function() {
-                $tasktablediv.load('/index.php?tasks #tasktable');
-            }, interval * 1000);
+            // Set correct table header width
+            taskHeader.style.width = tasktable_table.rows[0].cells[0].offsetWidth + "px";
+            assigneeHeader.style.width = tasktable_table.rows[0].cells[1].offsetWidth + "px";
 
             // Define tasktable autoscroll function
             (async function autoscroll() {
+                let count = 0;
+                let velocity = 30;
+                let scroll_to_update = 10;
+                let tableHeight = tasktable.clientHeight;
+                let duration = tableHeight * velocity;
                 while(true) {
-                    let duration = $tasktable.clientHeight * 15;
                     await $tasktablediv.animate({scrollTop: 0}, 800).promise();
                     await $tasktablediv.animate({scrollTop: 0}, 2000).promise();
-                    await $tasktablediv.animate({scrollTop: $tasktable.clientHeight}, duration, "linear").promise();
+                    await $tasktablediv.animate({scrollTop: tableHeight}, duration, "linear").promise();
+                    count ++;
+                    if (count === scroll_to_update){
+                        count = 0;
+                        // Reload and update task table with new data
+                        await $tasktablediv.load('/index.php?tasks #tasktable').promise();
+                        tasktable =  document.getElementById('tasktable');
+                        tasktable_table = document.getElementById('tasktable_table');
+                        tableHeight = tasktable.clientHeight;
+                        duration = tasktable.clientHeight * velocity;
+                    }
                 }
             })();
         </script>
 
         <hr>
 
-        <div id="statsdiv" style="flex-grow: 1;">
+        <div id="statsdiv" style="height: 40%; overflow: hidden;">
             <?php print_stats('0') ?>
         </div>
 
@@ -202,6 +222,15 @@ exit(0);
                 }, interval * 1000);
             }());
         </script>
+
+        <hr>
+
+        <div id="socialstatsdiv">
+            <h6 class='text-center'>Social stats</h6>
+            <div class="text-center">
+            <?php print_social_stats() ?>
+            </div>
+        </div>
     </div>
 </body>
 
