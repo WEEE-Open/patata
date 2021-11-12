@@ -172,9 +172,10 @@ function get_social_curl(){
 
 function download_tasks(): array
 {
+    $cache_timeout = 60 * 60 * 1;
     // TODO: use etag/If-Modified-Since instead
     if(file_exists(CACHE_FILE)) {
-        if(time() - filemtime(CACHE_FILE) >= 60 * 60 * 1) { // 1 hour
+        if(time() - filemtime(CACHE_FILE) <= $cache_timeout) { // 1 hour
             return json_decode(file_get_contents(CACHE_FILE), true);
         }
     }
