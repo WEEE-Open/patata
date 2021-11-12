@@ -46,16 +46,6 @@ function deck_request(string $url): string {
     return $response;
 }
 
-
-function get_random_quote()
-{
-    $quotes_file = file_get_contents('quotes.json');
-    $quotes = json_decode($quotes_file, true);
-    $quote_id = rand(0, count($quotes) - 1);
-    return $quotes[$quote_id];
-}
-
-
 function print_stats(string $stats)
 {
     require_once 'conf.php';
@@ -188,24 +178,21 @@ function download_tasks(): array
             return json_decode(file_get_contents(CACHE_FILE), true);
         }
     }
-    
+
     $request = deck_request(DECK_URL . "/apps/deck/api/v1.0/boards/" . DECK_BOARD . "/stacks"); //. "/stacks/" . $stack);
     $stacks_json = json_decode($request, true);
     $stacks_to_display = [];
-    foreach(explode(',', DECK_STACKS) as $stack_to_display) {
-        $stacks_to_display[] = (int) $stack_to_display;
-    }
-    $stacks_json2 = [];
-    foreach($stacks_json as $stack) {
-        if(in_array($stack['id'], $stacks_to_display)) {
-            $stacks_json2[] = $stack;
-        }
-    }
+
+    // Only show first and second stacks
+    foreach ($stacks_json as $key => $value)
+        if ($key < 2) $stacks_to_display[] = $value;
+        else break;
+
     unset($stacks_json);
 
-    file_put_contents(CACHE_FILE, json_encode($stacks_json2));
+    file_put_contents(CACHE_FILE, json_encode($stacks_to_display));
 
-    return $stacks_json2;
+    return $stacks_to_display;
 }
 
 

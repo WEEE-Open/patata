@@ -2,12 +2,7 @@
 include 'functions.php';
 session_start();
 
-if (isset($_GET['quote'])) {
-    $quote = get_random_quote();
-    header('Content-Type', 'application/json');
-    echo json_encode($quote);
-    exit(0);
-} else if (isset($_GET['stats'])) {
+if (isset($_GET['stats'])) {
     ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -46,7 +41,7 @@ exit(0);
     <link rel="icon" type="image/svg+xml" href="patata.svg">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
-	<script src="jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script src="jquery-3.3.1.min.js"></script>
 	<script src="bootstrap.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
 	<link rel="stylesheet" id="darktheme" type="text/css" href="bootstrap-dark.min.css" />
@@ -82,12 +77,12 @@ exit(0);
     </style>
 </head>
 
-<body onload="display_ct();  auto_update_qt();  auto_switch_theme()">
+<body onload="displayDate();  auto_update_qt();  auto_switch_theme()">
     <div class="container d-flex flex-column" style="height: 100vh;">
         <div id="datequoterow" class='row' style="flex-shrink: 1;">
             <div class='col-md-6'>
-                <div id='ct' style='padding-left: 30px;margin-left: 0;'></div>
-                <div id='ct2' style='padding-left: 30px;'></div>
+                <div id='currentDate' style='padding-left: 30px;margin-left: 0;'></div>
+                <div id='currentTime' style='padding-left: 30px;'></div>
             </div>
             <div class='col-md-6'>
                 <div id='quotesbox' class='text-right' style='margin-right: 0;padding-right: 30px;'></div>
@@ -95,36 +90,24 @@ exit(0);
             </div>
 
             <script type='text/javascript'>
-                // Refresh time for the date function
-                function display_c() {
-                    const refresh = 1000;
-                    setTimeout(display_ct, refresh);
-                }
+                function displayDate() {
 
-                function addZero(i) {
-                    if (i < 10) {
-                        i = '0' + i;
-                    }
-                    return i;
-                }
+                    const WEEK_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                    const MONTHS    = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-                function display_ct() { //Date generator function
-                    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                    let x = new Date();
-                    let d = addZero(x.getDate());
-                    let mo = months[x.getMonth()];
-                    let y = addZero(x.getFullYear());
-                    let h = addZero(x.getHours());
-                    let mi = addZero(x.getMinutes());
-                    let s = addZero(x.getSeconds());
-                    const wd = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                    let td = wd[x.getDay()];
-                    let x1 = td + ' - ' + d + ' ' + mo + ' ' + y;
-                    let x2 = h + ':' + mi + ':' + s;
-                    document.getElementById('ct').textContent = x1;
-                    document.getElementById('ct2').textContent = x2;
+                    let date = new Date();
+                    let day  = date.getDay();
 
-                    display_c();
+                    /** Display current date **/
+                    document.getElementById('currentDate').textContent = `${WEEK_DAYS[day]} - ${day} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+
+                    /** Display current time **/
+                    document.getElementById('currentTime').textContent = (date).toLocaleTimeString();
+
+                    setInterval(() => {
+                        /** Display current time **/
+                        document.getElementById('currentTime').textContent = (new Date()).toLocaleTimeString();
+                    }, 1000);
                 }
             </script>
             <script>
@@ -134,7 +117,7 @@ exit(0);
                 const refresh_timer = 60 * 60;
 
                 function auto_update_qt() {
-                    fetch('?quote')
+                    fetch('get_quotes.php')
                         .then(response => response.json())
                         .then(json => display_qt(json))
                         .then(() => setTimeout(auto_update_qt, refresh_timer * 1000));
