@@ -46,6 +46,7 @@ function deck_request(string $url): string {
     return $response;
 }
 
+
 function print_stats(string $stats)
 {
     require_once 'conf.php';
@@ -64,13 +65,16 @@ function print_stats(string $stats)
 function print_social_stats(){
     require_once 'conf.php';
 
-    $socials = ['youtube'];
+    $socials = ['youtube',
+        'facebook',
+        'instagram'];
 
     foreach ($socials as $social){
         echo print_social_stat($social);
     }
 
 }
+
 
 function print_social_stat($case)
 {
@@ -80,7 +84,7 @@ function print_social_stat($case)
                 '&fields=items/statistics/subscriberCount&key=' . YOUTUBE_API_KEY ,
                 'views' => 'https://www.googleapis.com/youtube/v3/channels?part=statistics&id=' . YOUTUBE_CHANNEL_ID .
                 '&fields=items/statistics/viewCount&key=' . YOUTUBE_API_KEY];
-            $result = '<div class="col-12 align-middle">'.
+            $result = '<div class="col-12 align-middle" style="display: inline;">'.
                 '<i class="fa fa-youtube-play" style="vertical-align: middle; font-size: 1.5rem; color: red;"></i>';
             foreach ($urls as $key => $url){
                 $query = file_get_contents($url);
@@ -101,10 +105,24 @@ function print_social_stat($case)
             $result .= '</div>';
             break;
         case 'facebook':
-            echo 'facebook_stats';
+            $url = 'https://graph.facebook.com/' . FACEBOOK_PAGE_ID . '/?fields=fan_count&access_token=' . FACEBOOK_ACCESS_TOKEN;
+            $result = file_get_contents($url);
+            $result = json_decode($result, true);
+            $result = '<div class="col-12 align-middle" style="display: inline;">'.
+                '<i class="fa fa-facebook-square" style="vertical-align: middle; font-size: 1.5rem; color: #3b5998;"></i>'.
+                '<span class="pl-1" style="font-size: 1rem; vertical-align: middle;">' .
+                $result['fan_count'] . '</span></div>';
             break;
         case 'instagram':
-            echo 'instagram_stats';
+            $url = 'https://api.evolve.social/instagram/realtime/weeeopen';
+            $curl = get_social_curl();
+            curl_setopt($curl, CURLOPT_URL, $url);
+            $result = curl_exec($curl);
+            $result = json_decode($result, true);
+            $result = '<div class="col-12 align-middle" style="display: inline;">'.
+                '<i class="fa fa-instagram instagram_icon" style="vertical-align: middle; font-size: 1.5rem; "></i>'.
+                '<span class="pl-1" style="font-size: 1rem; vertical-align: middle;">' .
+                $result['data']['followerCount'] . '</span></div>';
             break;
         default:
             echo 'lol';
@@ -165,6 +183,18 @@ function get_curl()
 function get_social_curl(){
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, [
+        'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0',
+        'Accept: */*',
+        'Accept-Language: it-IT,it;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Authorization: Basic ZnJvbnRlbmQ6bmFpeDZlaU0=',
+        'Origin: https://instastatistics.com',
+        'Referer: https://instastatistics.com/',
+        'Sec-Fetch-Dest: empty',
+        'Sec-Fetch-Mode: cors',
+        'Sec-Fetch-Site: cross-site',
+        'TE: trailers',
+    ]);
 
     return $curl;
 }
