@@ -68,6 +68,13 @@ exit(0);
             padding: 2px 0px 2px 10px !important;
         }
 
+        .instagram_icon {
+            font-size: 72px;
+            background: -webkit-linear-gradient(#405de6, #f56040);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .darkTheme .text-muted {
             color: #c4c4c4 !important;
         }
@@ -226,7 +233,6 @@ exit(0);
         <hr>
 
         <div id="socialstatsdiv">
-            <h6 class='text-center'>Social stats</h6>
             <div class="text-center">
             <?php print_social_stats() ?>
             </div>
