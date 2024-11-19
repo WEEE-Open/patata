@@ -103,10 +103,11 @@ exit(0);
                     const MONTHS    = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
                     let date = new Date();
-                    let day  = date.getDay();
+                    let week_day = date.getDay();
+                    let day = date.getDate();
 
                     /** Display current date **/
-                    document.getElementById('currentDate').textContent = `${WEEK_DAYS[day]} - ${day} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+                    document.getElementById('currentDate').textContent = `${WEEK_DAYS[week_day]} - ${day} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
 
                     /** Display current time **/
                     document.getElementById('currentTime').textContent = (date).toLocaleTimeString();
