@@ -16,13 +16,13 @@ Finally, create an "application password" from your
 
 Then, prepare the configuration:
 
-```bash
+```shell
 cp quotes-example.json quotes.json
 cp conf-example.php conf.php
 nano conf.php # You'll need to set the DECK_* variables at least, the TARALLO_* ones are already good for a development build
 ```
 
-If you want to find the numeri stack and board IDs, you can access deck-test.php, it will list all boards and stacks it can read with the supplied user and password. 
+If you want to find the stack and board IDs, you can access deck-test.php, it will list all boards and stacks it can read with the supplied user and password. 
 
 ## License
 
